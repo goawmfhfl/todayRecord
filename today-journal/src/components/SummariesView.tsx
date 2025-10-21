@@ -3,6 +3,7 @@ import { Calendar, TrendingUp, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "./ui/button";
 import { Card } from "./ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useRouter } from "next/navigation";
 import type { Entry, PeriodSummary } from "@/types/Entry";
 
 type SummariesViewProps = {
@@ -23,6 +24,7 @@ export function SummariesView({
   onGenerateSummary,
   onSelectSummary,
 }: SummariesViewProps) {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<"weekly" | "monthly">("weekly");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
@@ -154,7 +156,9 @@ export function SummariesView({
                 <Card
                   key={summary.id}
                   className="p-4 cursor-pointer transition-all hover:shadow-md active:scale-[0.99]"
-                  onClick={() => onSelectSummary(summary)}
+                  onClick={() =>
+                    router.push(`/summaries/feedback/weekly/${summary.id}`)
+                  }
                   style={{
                     backgroundColor: "white",
                     border: "1px solid #EFE9E3",
@@ -286,7 +290,9 @@ export function SummariesView({
                 <Card
                   key={summary.id}
                   className="p-4 cursor-pointer transition-all hover:shadow-md active:scale-[0.99]"
-                  onClick={() => onSelectSummary(summary)}
+                  onClick={() =>
+                    router.push(`/summaries/feedback/monthly/${summary.id}`)
+                  }
                   style={{
                     backgroundColor: "white",
                     border: "1px solid #EFE9E3",

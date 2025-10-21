@@ -35,8 +35,17 @@ export const useJournalStore = create<JournalState>((set) => ({
     set((state) => ({ entries: state.entries.filter((e) => e.id !== id) })),
   generateSummary: (type, weekNumber, monthNumber, year) => {
     // 샘플 요약 생성 로직
+    const id =
+      type === "weekly"
+        ? `${year}-w${weekNumber?.toString().padStart(2, "0")}-${crypto
+            .randomUUID()
+            .slice(0, 8)}`
+        : `${year}-m${monthNumber?.toString().padStart(2, "0")}-${crypto
+            .randomUUID()
+            .slice(0, 8)}`;
+
     const newSummary: PeriodSummary = {
-      id: crypto.randomUUID(),
+      id,
       type,
       period:
         type === "weekly"
