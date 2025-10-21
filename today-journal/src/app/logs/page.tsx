@@ -1,7 +1,10 @@
 "use client";
 
 import { LogView } from "@/components/LogView";
+import { useJournal } from "../providers";
 
 export default function LogsPage() {
-  return <LogView entries={[]} onSelectDate={() => {}} />;
+  const { entries } = useJournal();
+
+  return <LogView entries={entries} onSelectDate={() => {}} />;
 }

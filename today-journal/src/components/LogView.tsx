@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { Card } from "./ui/card";
+import { Badge } from "./ui/badge";
 import type { Entry } from "@/types/Entry";
 import { DayPicker } from "react-day-picker";
 import { ko } from "react-day-picker/locale";
@@ -66,9 +67,12 @@ function getCalendarMatrix(
   return matrix;
 }
 
-// ISO 날짜 문자열 생성 함수
+// 로컬 날짜 문자열 생성 함수 (시간대 문제 해결)
 function toISODate(date: Date): string {
-  return date.toISOString().split("T")[0];
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
 
 // 오늘 날짜 확인 함수 (한국 시간 기준)
@@ -89,7 +93,8 @@ function Calendar({
   onSelectDate,
   locale = "ko",
   startOfWeek = "sun",
-}: CalendarProps) {
+  selectedDate,
+}: CalendarProps & { selectedDate: Date }) {
   const matrix = useMemo(
     () => getCalendarMatrix(year, month, startOfWeek),
     [year, month, startOfWeek]
@@ -144,6 +149,8 @@ function Calendar({
             const hasLog = logs[isoDate]?.hasLog || false;
             const isCurrentMonth = date.getMonth() === month - 1;
             const isTodayDate = isToday(date);
+            const isSelected =
+              selectedDate.toISOString().split("T")[0] === isoDate;
 
             return (
               <button
@@ -151,20 +158,24 @@ function Calendar({
                 className={`
                   relative flex flex-col items-center justify-center
                   aspect-square rounded-lg text-sm font-normal
-                  transition-all duration-150 ease-in-out
-                  hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-300
+                  focus:outline-none focus:ring-2 focus:ring-gray-300
                   ${
                     isCurrentMonth
                       ? "text-gray-900"
                       : "text-gray-400 opacity-40"
                   }
-                  ${isTodayDate ? "ring-1 ring-blue-500 bg-blue-50" : ""}
+                  ${isTodayDate ? "ring-2 ring-gray-300" : ""}
+                  ${
+                    isSelected
+                      ? "bg-[#6B7A6F] text-white hover:bg-[#5A6A5F]"
+                      : "hover:bg-gray-100"
+                  }
                 `}
                 onClick={() => handleDateClick(date)}
                 onKeyDown={(e) => handleKeyDown(e, date)}
                 aria-label={`${isoDate}, ${hasLog ? "기록 있음" : "기록 없음"}${
                   isTodayDate ? ", 오늘" : ""
-                }`}
+                }${isSelected ? ", 선택됨" : ""}`}
                 tabIndex={0}
               >
                 {/* 날짜 숫자 */}
@@ -173,8 +184,11 @@ function Calendar({
                 {/* 기록 점 */}
                 {hasLog && (
                   <div
-                    className="mt-1 h-1.5 w-1.5 rounded-full"
-                    style={{ backgroundColor: "#FFD23F" }}
+                    className="absolute h-1.5 w-1.5 rounded-full"
+                    style={{
+                      backgroundColor: "#FFD23F",
+                      bottom: "8%",
+                    }}
                   />
                 )}
               </button>
@@ -189,11 +203,21 @@ function Calendar({
 export function LogView({ entries, onSelectDate }: LogViewProps) {
   const [selectedMonth, setSelectedMonth] = useState<Date>(new Date());
 
-  // entries를 CalendarLogMap 형태로 변환
+  // 로컬 시간 기준으로 오늘 날짜 계산
+  const getTodayInKorea = () => {
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  };
+
+  const [selectedDate, setSelectedDate] = useState<Date>(getTodayInKorea()); // 정확한 오늘 날짜로 초기화
+
+  // entries를 CalendarLogMap 형태로 변환 (로컬 시간 기준)
   const logs = useMemo(() => {
     const logMap: CalendarLogMap = {};
     entries.forEach((entry) => {
-      const isoDate = new Date(entry.timestamp).toISOString().split("T")[0];
+      // 로컬 시간 기준으로 날짜 키 생성
+      const entryDate = new Date(entry.timestamp);
+      const isoDate = toISODate(entryDate);
       logMap[isoDate] = { hasLog: true };
     });
     return logMap;
@@ -201,7 +225,8 @@ export function LogView({ entries, onSelectDate }: LogViewProps) {
 
   const handleSelectDate = (isoDate: string) => {
     const date = new Date(isoDate);
-    onSelectDate(date);
+    setSelectedDate(date);
+    // 페이지 이동 없이 상태만 업데이트
   };
 
   const handlePrevMonth = () => {
@@ -216,19 +241,21 @@ export function LogView({ entries, onSelectDate }: LogViewProps) {
     );
   };
 
-  const monthEntries = entries.filter((entry) => {
-    const d = new Date(entry.timestamp);
-    return (
-      d.getMonth() === selectedMonth.getMonth() &&
-      d.getFullYear() === selectedMonth.getFullYear()
-    );
-  });
+  // 선택된 날짜의 기록들 필터링
+  const selectedDateEntries = useMemo(() => {
+    const selectedIsoDate = toISODate(selectedDate);
+    return entries.filter((entry) => {
+      const entryDate = new Date(entry.timestamp);
+      const entryIsoDate = toISODate(entryDate);
+      return entryIsoDate === selectedIsoDate;
+    });
+  }, [entries, selectedDate]);
 
-  const entriesByDate = monthEntries.reduce((acc, entry) => {
-    const key = new Date(entry.timestamp).toISOString().split("T")[0];
-    (acc[key] ||= []).push(entry);
-    return acc;
-  }, {} as Record<string, Entry[]>);
+  // 선택된 날짜가 오늘인지 확인
+  const isToday = useMemo(() => {
+    const today = getTodayInKorea();
+    return toISODate(selectedDate) === toISODate(today);
+  }, [selectedDate]);
 
   return (
     <div className="min-h-screen pb-24" style={{ backgroundColor: "#FAFAF8" }}>
@@ -305,101 +332,123 @@ export function LogView({ entries, onSelectDate }: LogViewProps) {
             onSelectDate={handleSelectDate}
             locale="ko"
             startOfWeek="sun"
+            selectedDate={selectedDate}
           />
         </Card>
 
-        {/* Month Summary */}
-        <div>
+        {/* 선택된 날짜의 기록들 */}
+        <div className="mb-6">
           <h2 className="mb-4" style={{ color: "#333333", fontSize: "1.1rem" }}>
-            {selectedMonth.toLocaleDateString("ko-KR", {
+            {selectedDate.toLocaleDateString("ko-KR", {
               year: "numeric",
               month: "long",
+              day: "numeric",
+              weekday: "long",
             })}
+            {isToday && " (오늘)"}
           </h2>
 
-          {Object.keys(entriesByDate).length > 0 ? (
+          {selectedDateEntries.length > 0 ? (
             <div className="space-y-3">
-              {Object.entries(entriesByDate)
-                .sort(([a], [b]) => b.localeCompare(a))
-                .map(([dateKey, dayEntries]) => {
-                  const date = new Date(dateKey);
-                  return (
-                    <Card
-                      key={dateKey}
-                      className="p-4 cursor-pointer transition-all hover:shadow-md"
-                      onClick={() => onSelectDate(date)}
+              {selectedDateEntries.map((entry) => (
+                <Card
+                  key={entry.id}
+                  className="p-4"
+                  style={{
+                    backgroundColor: "white",
+                    border: "1px solid #EFE9E3",
+                  }}
+                >
+                  <div className="flex items-start gap-3">
+                    <div
+                      className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
                       style={{
-                        backgroundColor: "white",
-                        border: "1px solid #EFE9E3",
+                        backgroundColor:
+                          entry.type === "insight" ? "#A8BBA8" : "#A3BFD9",
+                        color: "white",
+                        fontSize: "0.8rem",
                       }}
                     >
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p
-                            style={{
-                              color: "#333333",
-                              fontSize: "0.95rem",
-                              marginBottom: "0.25rem",
-                            }}
-                          >
-                            {date.toLocaleDateString("ko-KR", {
-                              month: "long",
-                              day: "numeric",
-                              weekday: "short",
-                            })}
-                          </p>
-                          <p
-                            style={{
-                              color: "#4E4B46",
-                              opacity: 0.6,
-                              fontSize: "0.8rem",
-                            }}
-                          >
-                            {dayEntries.length}개의 기록
-                          </p>
-                        </div>
-                        <div className="flex gap-1">
-                          {dayEntries.slice(0, 3).map((entry) => {
-                            const color =
-                              entry.type === "insight"
-                                ? "#A8BBA8"
-                                : entry.type === "feedback"
-                                ? "#A3BFD9"
-                                : "#D08C60";
-                            return (
-                              <div
-                                key={entry.id}
-                                className="w-2 h-2 rounded-full"
-                                style={{ backgroundColor: color }}
-                              />
-                            );
-                          })}
-                          {dayEntries.length > 3 && (
-                            <span
-                              style={{
-                                color: "#4E4B46",
-                                opacity: 0.5,
-                                fontSize: "0.75rem",
-                                marginLeft: "0.25rem",
-                              }}
-                            >
-                              +{dayEntries.length - 3}
-                            </span>
+                      {entry.type === "insight" ? "💡" : "📝"}
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Badge
+                          className="rounded-full px-2 py-1"
+                          style={{
+                            backgroundColor:
+                              entry.type === "insight" ? "#A8BBA8" : "#A3BFD9",
+                            color: "white",
+                            fontSize: "0.75rem",
+                          }}
+                        >
+                          {entry.type === "insight" ? "인사이트" : "피드백"}
+                        </Badge>
+                        <span
+                          style={{
+                            color: "#4E4B46",
+                            opacity: 0.6,
+                            fontSize: "0.8rem",
+                          }}
+                        >
+                          {new Date(entry.timestamp).toLocaleTimeString(
+                            "ko-KR",
+                            {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            }
                           )}
-                        </div>
+                        </span>
                       </div>
-                    </Card>
-                  );
-                })}
+                      <p
+                        style={{
+                          color: "#333333",
+                          lineHeight: "1.6",
+                          fontSize: "0.9rem",
+                        }}
+                      >
+                        {entry.content}
+                      </p>
+                    </div>
+                  </div>
+                </Card>
+              ))}
             </div>
           ) : (
             <div className="text-center py-12">
               <p style={{ color: "#4E4B46", opacity: 0.6, fontSize: "0.9rem" }}>
-                이번 달에는 기록이 없습니다
+                이 날에는 기록이 없습니다
               </p>
             </div>
           )}
         </div>
+
+        {/* AI 리뷰 섹션 */}
+        {selectedDateEntries.length > 0 && (
+          <Card
+            className="p-6"
+            style={{
+              backgroundColor: "#A8BBA8",
+              color: "white",
+              border: "none",
+            }}
+          >
+            <h3 className="mb-3" style={{ fontSize: "1rem", opacity: 0.9 }}>
+              🤖 AI 리뷰
+            </h3>
+            <p style={{ fontSize: "0.95rem", lineHeight: "1.7" }}>
+              {isToday
+                ? "오늘은 새로운 시작에 대한 에너지가 느껴집니다. 기록된 내용들을 보면 성장에 대한 의지가 강하게 드러나네요. 작은 변화들도 의미 있게 기록하고 계시는 모습이 인상적입니다."
+                : `${
+                    selectedDateEntries.length
+                  }개의 기록을 통해 이 날의 패턴을 분석해보니, ${
+                    selectedDateEntries.some((e) => e.type === "insight")
+                      ? "인사이트"
+                      : "피드백"
+                  } 중심의 성찰이 돋보입니다. 꾸준한 기록 습관이 자기 인식의 깊이를 더해주고 있네요.`}
+            </p>
+          </Card>
+        )}
       </div>
     </div>
   );
