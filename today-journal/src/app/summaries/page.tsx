@@ -1,7 +1,18 @@
 "use client";
 
 import { SummariesView } from "@/components/SummariesView";
+import { useJournalStore } from "@/app/store/useJournalStore";
 
 export default function SummariesPage() {
-  return <SummariesView />;
+  const { entries, summaries, generateSummary, selectSummary } =
+    useJournalStore();
+
+  return (
+    <SummariesView
+      entries={entries}
+      summaries={summaries}
+      onGenerateSummary={generateSummary}
+      onSelectSummary={selectSummary}
+    />
+  );
 }
