@@ -14,13 +14,19 @@ import { Badge } from "./ui/badge";
 import { Progress } from "./ui/progress";
 import { Card } from "./ui/card";
 import { Alert, AlertDescription } from "./ui/alert";
-import { useJournal } from "../app/providers";
-import type { ApiFeedbackPayload } from "../types/Entry";
+import { ApiFeedbackPayload } from "../types/Entry";
+
+type DailyFeedbackViewProps = {
+  onBack: () => void;
+  onFetchFeedback: (date: string) => Promise<ApiFeedbackPayload>;
+};
 
 type LoadingState = "loading" | "success" | "error" | "empty";
 
-export function DailyFeedbackView() {
-  const { fetchFeedback } = useJournal();
+export function DailyFeedbackView({
+  onBack,
+  onFetchFeedback,
+}: DailyFeedbackViewProps) {
   const [loadingState, setLoadingState] = useState<LoadingState>("loading");
   const [feedback, setFeedback] = useState<ApiFeedbackPayload | null>(null);
   const [errorMessage, setErrorMessage] = useState<string>("");
@@ -33,7 +39,7 @@ export function DailyFeedbackView() {
       const today = new Date().toISOString().split("T")[0];
 
       try {
-        const data = await fetchFeedback(today);
+        const data = await onFetchFeedback(today);
 
         if (!data || Object.keys(data).length === 0) {
           setLoadingState("empty");
@@ -52,7 +58,7 @@ export function DailyFeedbackView() {
     };
 
     loadFeedback();
-  }, [fetchFeedback]);
+  }, [onFetchFeedback]);
 
   const formatDate = (dateStr: string) => {
     try {
@@ -72,17 +78,13 @@ export function DailyFeedbackView() {
     return Math.max(0, Math.min(10, score));
   };
 
-  const handleBack = () => {
-    window.history.back();
-  };
-
   return (
     <div className="max-w-2xl mx-auto px-4 py-6 pb-20">
       {/* Header */}
       <header className="mb-6">
         <Button
           variant="ghost"
-          onClick={handleBack}
+          onClick={onBack}
           className="mb-3 -ml-2"
           style={{ color: "#6B7A6F" }}
         >
@@ -129,7 +131,7 @@ export function DailyFeedbackView() {
           </Alert>
           <div className="flex justify-center">
             <Button
-              onClick={handleBack}
+              onClick={onBack}
               style={{
                 backgroundColor: "#6B7A6F",
                 color: "white",
@@ -160,7 +162,7 @@ export function DailyFeedbackView() {
             일상 기록을 먼저 작성해주세요
           </p>
           <Button
-            onClick={handleBack}
+            onClick={onBack}
             style={{
               backgroundColor: "#6B7A6F",
               color: "white",
@@ -465,7 +467,7 @@ export function DailyFeedbackView() {
           {/* Action Button */}
           <div className="flex justify-center pt-4">
             <Button
-              onClick={handleBack}
+              onClick={onBack}
               className="rounded-full"
               style={{
                 backgroundColor: "#6B7A6F",

@@ -2,7 +2,12 @@
 
 import { createContext, useContext, useState, ReactNode } from "react";
 import { useRouter } from "next/navigation";
-import type { Entry, DailyFeedback, PeriodSummary } from "@/types/Entry";
+import type {
+  Entry,
+  DailyFeedback,
+  PeriodSummary,
+  ApiFeedbackPayload,
+} from "@/types/Entry";
 
 interface JournalContextType {
   entries: Entry[];
@@ -20,6 +25,7 @@ interface JournalContextType {
     customEndDate?: Date
   ) => void;
   viewDayDetail: (date: Date) => void;
+  fetchFeedback: (date: string) => Promise<ApiFeedbackPayload>;
 }
 
 const JournalContext = createContext<JournalContextType | undefined>(undefined);
@@ -143,6 +149,8 @@ export function JournalProvider({ children }: { children: ReactNode }) {
     });
 
     const mockSummary: PeriodSummary = {
+      id: `summary-${type}-${Date.now()}`,
+      createdAt: new Date(),
       period: periodLabel,
       type,
       dateRange: dateRangeLabel,
@@ -207,6 +215,36 @@ export function JournalProvider({ children }: { children: ReactNode }) {
     router.push("/daydetail");
   };
 
+  const fetchFeedback = async (date: string): Promise<ApiFeedbackPayload> => {
+    // Mock API call - 실제로는 서버에서 데이터를 가져와야 합니다
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const mockFeedback: ApiFeedbackPayload = {
+          date,
+          lesson:
+            "오늘은 작은 변화에도 감사할 줄 아는 마음이 중요하다는 것을 배웠습니다.",
+          keywords: ["#감사", "#성장", "#루틴", "#집중"],
+          observation:
+            "오늘은 평소보다 더 체계적으로 일정을 관리하려는 노력이 보였습니다. 특히 아침 시간을 효율적으로 활용하여 하루의 시작을 긍정적으로 만들었습니다.",
+          insight:
+            "작은 습관의 변화가 전체적인 하루의 질을 크게 향상시킨다는 것을 깨달았습니다. 특히 아침 루틴의 중요성을 다시 한번 인식하게 되었습니다.",
+          action_feedback: {
+            well_done:
+              "일정 관리와 시간 활용이 매우 체계적이었습니다. 아침 시간을 잘 활용하여 하루를 긍정적으로 시작한 점이 인상적입니다.",
+            to_improve:
+              "휴식 시간을 더 확보하고, 스트레스가 쌓일 때 조기에 대처하는 방법을 찾아보세요.",
+          },
+          focus_tomorrow:
+            "내일은 오전 중 짧은 산책을 추가하고, 점심 후 10분간 명상 시간을 가져보세요. 감정 에너지를 재충전할 수 있을 거예요.",
+          focus_score: 8,
+          satisfaction_score: 7,
+          dominant_topics: ["성장", "집중", "루틴", "자기관리"],
+        };
+        resolve(mockFeedback);
+      }, 1000);
+    });
+  };
+
   const value: JournalContextType = {
     entries,
     dailyFeedbackMap,
@@ -219,6 +257,7 @@ export function JournalProvider({ children }: { children: ReactNode }) {
     generateFeedback,
     generatePeriodSummary,
     viewDayDetail,
+    fetchFeedback,
   };
 
   return (
