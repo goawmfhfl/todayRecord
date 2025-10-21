@@ -23,7 +23,7 @@ export default function SummaryDetailPage({
   useEffect(() => {
     const loadSummary = async () => {
       try {
-        setLoading(true);
+        setLoading(false); // 로딩 상태를 바로 false로 설정
         setError(null);
 
         // 실제 데이터에서 찾기
@@ -39,8 +39,6 @@ export default function SummaryDetailPage({
       } catch (err) {
         setError("요약 데이터를 불러오지 못했습니다.");
         console.error("Error loading summary:", err);
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -141,9 +139,6 @@ export default function SummaryDetailPage({
 
 // 더미 데이터 생성 함수
 async function generateDummySummary(id: string): Promise<PeriodSummary> {
-  // 실제로는 API 호출을 시뮬레이션
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-
   const isWeekly = id.includes("weekly") || Math.random() > 0.5;
   const currentDate = new Date();
   const year = currentDate.getFullYear();
@@ -182,6 +177,41 @@ async function generateDummySummary(id: string): Promise<PeriodSummary> {
       ? undefined
       : `${year}-${monthNumber.toString().padStart(2, "0")}`,
     totalEntries: Math.floor(Math.random() * 15) + 5,
+    createdAt: new Date(),
+
+    // 새로운 데이터 구조에 맞는 필드들
+    keyword_trend: {
+      increased: isWeekly
+        ? ["집중력", "루틴", "협업", "성취"]
+        : ["AI활용", "실행력", "자기확신", "시스템화"],
+      decreased: isWeekly
+        ? ["스트레스", "불안", "피로"]
+        : ["불안", "피로", "완벽주의"],
+    },
+    behavior_pattern: isWeekly
+      ? "아침 루틴을 정착시키면서 하루의 시작이 더 체계적이 되었습니다"
+      : "기록과 운동 루틴이 완전히 습관화됨",
+    growth_curve: {
+      focus_score_avg: isWeekly ? 7.5 : 8.2,
+      satisfaction_trend: isWeekly ? "+8%" : "+12%",
+      consistency: isWeekly ? 0.75 : 0.9,
+    },
+    insight_summary: isWeekly
+      ? "새로운 루틴의 도입이 생산성 향상의 핵심이었습니다"
+      : "결과보다 과정에 집중하는 태도가 강화되며 자기확신이 뚜렷해졌다.",
+    action_recommendation: isWeekly
+      ? [
+          "다음 주에는 더 체계적인 계획을 세우고 우선순위를 명확히 할 것",
+          "짧은 휴식 시간을 더 규칙적으로 활용할 것",
+          "팀과의 소통 빈도를 유지하면서 협업 효율성 높이기",
+        ]
+      : [
+          "매일의 실행을 시스템 단위로 자동화할 것",
+          "루틴 점검일(주 1회)을 고정하여 회고 리듬 유지",
+          "다음 달엔 '루틴 → 창의성' 단계로 확장",
+        ],
+
+    // 기존 필드들 (호환성을 위해 유지)
     overview: isWeekly
       ? "이번 주는 집중력과 생산성 측면에서 긍정적인 변화가 있었습니다. 새로운 루틴을 도입하면서 시간 관리가 개선되었고, 프로젝트 진행도가 향상되었습니다."
       : "이번 달은 전반적으로 성장과 발전의 시기였습니다. 새로운 기술을 학습하고, 팀워크를 강화하며, 개인적인 목표 달성에 집중했습니다.",
@@ -218,8 +248,6 @@ async function generateDummySummary(id: string): Promise<PeriodSummary> {
     nextSteps: isWeekly
       ? "다음 주에는 더 체계적인 계획을 세우고, 우선순위를 명확히 하겠습니다."
       : "다음 달에는 새로운 도전에 집중하고, 지속적인 성장을 추구하겠습니다.",
-    createdAt: new Date(),
-    // 추가 필드들
     summary: isWeekly
       ? "이번 주는 집중력과 생산성 측면에서 긍정적인 변화가 있었습니다."
       : "이번 달은 전반적으로 성장과 발전의 시기였습니다.",
