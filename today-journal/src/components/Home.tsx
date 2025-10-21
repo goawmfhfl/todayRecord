@@ -76,8 +76,6 @@ export function Home() {
     switch (type) {
       case "insight":
         return "인사이트";
-      case "emotion":
-        return "감정";
       case "feedback":
         return "피드백";
     }
@@ -126,7 +124,7 @@ export function Home() {
         style={{ backgroundColor: "#F3F4F6" }}
       >
         <div className="flex gap-2 mb-4">
-          {(["insight", "emotion", "feedback"] as const).map((type) => (
+          {(["insight", "feedback"] as const).map((type) => (
             <button
               key={type}
               onClick={() => setSelectedType(type)}
@@ -196,7 +194,7 @@ export function Home() {
                         backgroundColor:
                           entry.type === "insight"
                             ? "#A8BBA8"
-                            : entry.type === "emotion"
+                            : entry.type === "feedback"
                             ? "#A3BFD9"
                             : "#D08C60",
                         color: "white",
@@ -309,7 +307,7 @@ export function Home() {
 
           <div className="space-y-4 py-4">
             <div className="flex gap-3">
-              {(["insight", "emotion", "feedback"] as const).map((type) => (
+              {(["insight", "feedback"] as const).map((type) => (
                 <button
                   key={type}
                   onClick={() => setEditType(type)}
