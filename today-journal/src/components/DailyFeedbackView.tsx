@@ -17,48 +17,39 @@ import { Alert, AlertDescription } from "./ui/alert";
 import { ApiFeedbackPayload } from "../types/Entry";
 
 type DailyFeedbackViewProps = {
+  feedback: ApiFeedbackPayload | null;
+  loading?: boolean;
+  error?: string | null;
   onBack: () => void;
-  onFetchFeedback: (date: string) => Promise<ApiFeedbackPayload>;
+  showBackButton?: boolean;
+  title?: string;
+  subtitle?: string;
 };
 
 type LoadingState = "loading" | "success" | "error" | "empty";
 
 export function DailyFeedbackView({
+  feedback,
+  loading = false,
+  error = null,
   onBack,
-  onFetchFeedback,
+  showBackButton = true,
+  title = "오늘의 피드백",
+  subtitle = "AI가 분석한 일일 인사이트를 확인하세요",
 }: DailyFeedbackViewProps) {
   const [loadingState, setLoadingState] = useState<LoadingState>("loading");
-  const [feedback, setFeedback] = useState<ApiFeedbackPayload | null>(null);
-  const [errorMessage, setErrorMessage] = useState<string>("");
 
   useEffect(() => {
-    const loadFeedback = async () => {
+    if (loading) {
       setLoadingState("loading");
-      setErrorMessage("");
-
-      const today = new Date().toISOString().split("T")[0];
-
-      try {
-        const data = await onFetchFeedback(today);
-
-        if (!data || Object.keys(data).length === 0) {
-          setLoadingState("empty");
-          setFeedback(null);
-        } else {
-          setFeedback(data);
-          setLoadingState("success");
-        }
-      } catch (error) {
-        setLoadingState("error");
-        setErrorMessage(
-          "피드백 데이터를 불러오지 못했어요. 잠시 후 다시 시도해주세요."
-        );
-        setFeedback(null);
-      }
-    };
-
-    loadFeedback();
-  }, [onFetchFeedback]);
+    } else if (error) {
+      setLoadingState("error");
+    } else if (!feedback || Object.keys(feedback).length === 0) {
+      setLoadingState("empty");
+    } else {
+      setLoadingState("success");
+    }
+  }, [loading, error, feedback]);
 
   const formatDate = (dateStr: string) => {
     try {
@@ -82,20 +73,22 @@ export function DailyFeedbackView({
     <div className="max-w-2xl mx-auto px-4 py-6 pb-20">
       {/* Header */}
       <header className="mb-6">
-        <Button
-          variant="ghost"
-          onClick={onBack}
-          className="mb-3 -ml-2"
-          style={{ color: "#6B7A6F" }}
-        >
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          돌아가기
-        </Button>
+        {showBackButton && (
+          <Button
+            variant="ghost"
+            onClick={onBack}
+            className="mb-3 -ml-2"
+            style={{ color: "#6B7A6F" }}
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            돌아가기
+          </Button>
+        )}
         <h1 className="mb-1" style={{ color: "#333333", fontSize: "1.5rem" }}>
-          오늘의 피드백
+          {title}
         </h1>
         <p style={{ color: "#4E4B46", opacity: 0.7, fontSize: "0.9rem" }}>
-          AI가 분석한 일일 인사이트를 확인하세요
+          {subtitle}
         </p>
       </header>
 
@@ -127,7 +120,7 @@ export function DailyFeedbackView({
               color: "#991B1B",
             }}
           >
-            <AlertDescription>{errorMessage}</AlertDescription>
+            <AlertDescription>{error}</AlertDescription>
           </Alert>
           <div className="flex justify-center">
             <Button

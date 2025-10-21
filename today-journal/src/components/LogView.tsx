@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import { Card } from "./ui/card";
 import { Badge } from "./ui/badge";
+import { Button } from "./ui/button";
 import type { Entry } from "@/types/Entry";
-import { DayPicker } from "react-day-picker";
-import { ko } from "react-day-picker/locale";
+
 // 캘린더 데이터 타입 정의
 type CalendarLogMap = Record<string, { hasLog: boolean }>;
 
@@ -75,9 +76,19 @@ function toISODate(date: Date): string {
   return `${year}-${month}-${day}`;
 }
 
-// 오늘 날짜 확인 함수 (한국 시간 기준)
+// 오늘 날짜 확인 함수 (로컬 시간 기준, 실시간 계산)
 function isToday(date: Date): boolean {
-  const today = new Date();
+  const now = new Date();
+  // 시간을 00:00:00으로 설정하여 정확한 날짜만 비교
+  const today = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate(),
+    0,
+    0,
+    0,
+    0
+  );
   return (
     date.getFullYear() === today.getFullYear() &&
     date.getMonth() === today.getMonth() &&
@@ -201,15 +212,31 @@ function Calendar({
 }
 
 export function LogView({ entries, onSelectDate }: LogViewProps) {
+  const router = useRouter();
   const [selectedMonth, setSelectedMonth] = useState<Date>(new Date());
 
-  // 로컬 시간 기준으로 오늘 날짜 계산
+  // 로컬 시간 기준으로 오늘 날짜 계산 (매번 새로운 날짜 객체 생성)
   const getTodayInKorea = () => {
     const now = new Date();
-    return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+    const koreaTime = new Date(now.getTime() + 9 * 60 * 60 * 1000);
+
+    const today = new Date(
+      koreaTime.getFullYear(),
+      koreaTime.getMonth(),
+      koreaTime.getDate(),
+      0,
+      0,
+      0,
+      0
+    );
+    return today;
   };
 
-  const [selectedDate, setSelectedDate] = useState<Date>(getTodayInKorea()); // 정확한 오늘 날짜로 초기화
+  const [selectedDate, setSelectedDate] = useState<Date>(() => {
+    const today = getTodayInKorea();
+    return today;
+  }); // 함수로 초기화하여 매번 새로운 날짜 계산
 
   // entries를 CalendarLogMap 형태로 변환 (로컬 시간 기준)
   const logs = useMemo(() => {
@@ -251,7 +278,7 @@ export function LogView({ entries, onSelectDate }: LogViewProps) {
     });
   }, [entries, selectedDate]);
 
-  // 선택된 날짜가 오늘인지 확인
+  // 선택된 날짜가 오늘인지 확인 (실시간 계산)
   const isToday = useMemo(() => {
     const today = getTodayInKorea();
     return toISODate(selectedDate) === toISODate(today);
@@ -360,17 +387,6 @@ export function LogView({ entries, onSelectDate }: LogViewProps) {
                   }}
                 >
                   <div className="flex items-start gap-3">
-                    <div
-                      className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
-                      style={{
-                        backgroundColor:
-                          entry.type === "insight" ? "#A8BBA8" : "#A3BFD9",
-                        color: "white",
-                        fontSize: "0.8rem",
-                      }}
-                    >
-                      {entry.type === "insight" ? "💡" : "📝"}
-                    </div>
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-2">
                         <Badge
@@ -423,31 +439,24 @@ export function LogView({ entries, onSelectDate }: LogViewProps) {
           )}
         </div>
 
-        {/* AI 리뷰 섹션 */}
+        {/* AI 리뷰 버튼 */}
         {selectedDateEntries.length > 0 && (
-          <Card
-            className="p-6"
-            style={{
-              backgroundColor: "#A8BBA8",
-              color: "white",
-              border: "none",
-            }}
-          >
-            <h3 className="mb-3" style={{ fontSize: "1rem", opacity: 0.9 }}>
-              🤖 AI 리뷰
-            </h3>
-            <p style={{ fontSize: "0.95rem", lineHeight: "1.7" }}>
-              {isToday
-                ? "오늘은 새로운 시작에 대한 에너지가 느껴집니다. 기록된 내용들을 보면 성장에 대한 의지가 강하게 드러나네요. 작은 변화들도 의미 있게 기록하고 계시는 모습이 인상적입니다."
-                : `${
-                    selectedDateEntries.length
-                  }개의 기록을 통해 이 날의 패턴을 분석해보니, ${
-                    selectedDateEntries.some((e) => e.type === "insight")
-                      ? "인사이트"
-                      : "피드백"
-                  } 중심의 성찰이 돋보입니다. 꾸준한 기록 습관이 자기 인식의 깊이를 더해주고 있네요.`}
-            </p>
-          </Card>
+          <div className="flex justify-center">
+            <Button
+              onClick={() => {
+                router.push("/feedback");
+              }}
+              className="rounded-full px-6 py-3"
+              style={{
+                backgroundColor: "#A8BBA8",
+                color: "white",
+                fontSize: "0.9rem",
+                fontWeight: "500",
+              }}
+            >
+              🤖 AI 리뷰 보기
+            </Button>
+          </div>
         )}
       </div>
     </div>
