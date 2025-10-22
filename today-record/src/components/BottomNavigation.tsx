@@ -3,9 +3,15 @@
 import { Home as HomeIcon, Clock, BarChart3 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { shouldShowBottomNav } from "@/lib/navigation";
 
 export function BottomNavigation() {
   const pathname = usePathname();
+  const isVisible = shouldShowBottomNav(pathname ?? "");
+
+  if (!isVisible) {
+    return null;
+  }
 
   const navItems = [
     {
