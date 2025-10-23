@@ -15,14 +15,14 @@ import { Progress } from "./ui/progress";
 import { Card } from "./ui/card";
 import { Alert, AlertDescription } from "./ui/alert";
 import { useJournal } from "../app/providers";
-import type { ApiFeedbackPayload } from "../types/Entry";
+import type { DailyFeedbackPayload } from "../types/Entry";
 
 type LoadingState = "loading" | "success" | "error" | "empty";
 
 export function DailyFeedbackView() {
   const { fetchFeedback } = useJournal();
   const [loadingState, setLoadingState] = useState<LoadingState>("loading");
-  const [feedback, setFeedback] = useState<ApiFeedbackPayload | null>(null);
+  const [feedback, setFeedback] = useState<DailyFeedbackPayload | null>(null);
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   useEffect(() => {
@@ -84,7 +84,7 @@ export function DailyFeedbackView() {
           variant="ghost"
           onClick={handleBack}
           className="mb-3 -ml-2"
-          style={{ color: "#6B7A6F" }}
+          style={{ color: "#3B82F6" }}
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           돌아가기
@@ -103,9 +103,9 @@ export function DailyFeedbackView() {
           <div className="animate-pulse">
             <div
               className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center"
-              style={{ backgroundColor: "#EFE9E3" }}
+              style={{ backgroundColor: "#EBF4FF" }}
             >
-              <Sparkles className="w-8 h-8" style={{ color: "#6B7A6F" }} />
+              <Sparkles className="w-8 h-8" style={{ color: "#3B82F6" }} />
             </div>
             <p style={{ color: "#4E4B46", fontSize: "0.95rem" }}>
               피드백을 불러오는 중…
@@ -131,7 +131,7 @@ export function DailyFeedbackView() {
             <Button
               onClick={handleBack}
               style={{
-                backgroundColor: "#6B7A6F",
+                backgroundColor: "#3B82F6",
                 color: "white",
               }}
             >
@@ -269,7 +269,7 @@ export function DailyFeedbackView() {
               style={{ backgroundColor: "white", border: "1px solid #EFE9E3" }}
             >
               <div className="flex items-center gap-2 mb-3">
-                <Sparkles className="w-5 h-5" style={{ color: "#D08C60" }} />
+                <Sparkles className="w-5 h-5" style={{ color: "#B89A7A" }} />
                 <h2 style={{ color: "#333333", fontSize: "1.05rem" }}>
                   인사이트
                 </h2>
@@ -301,7 +301,7 @@ export function DailyFeedbackView() {
                   <div className="flex items-center gap-2 mb-3">
                     <CheckCircle2
                       className="w-5 h-5"
-                      style={{ color: "#A8BBA8" }}
+                      style={{ color: "#7BA87B" }}
                     />
                     <h3 style={{ color: "#333333", fontSize: "1rem" }}>
                       잘한 점
@@ -331,7 +331,7 @@ export function DailyFeedbackView() {
                   <div className="flex items-center gap-2 mb-3">
                     <TrendingUp
                       className="w-5 h-5"
-                      style={{ color: "#D08C60" }}
+                      style={{ color: "#B89A7A" }}
                     />
                     <h3 style={{ color: "#333333", fontSize: "1rem" }}>
                       개선하면 좋을 점

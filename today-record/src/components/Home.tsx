@@ -41,6 +41,8 @@ import { useJournal } from "../app/providers";
 export function Home() {
   const { entries, addEntry, editEntry, deleteEntry, generateFeedback } =
     useJournal();
+
+  console.log(entries);
   const [selectedType, setSelectedType] = useState<Entry["type"]>("insight");
   const [content, setContent] = useState("");
   const [editingEntry, setEditingEntry] = useState<Entry | null>(null);
@@ -171,7 +173,11 @@ export function Home() {
               className="px-3 py-1.5 rounded-full transition-all text-sm"
               style={{
                 backgroundColor:
-                  selectedType === type ? "#A8BBA8" : "transparent",
+                  selectedType === type
+                    ? type === "feedback"
+                      ? "#A3BFD9"
+                      : "#A8BBA8"
+                    : "transparent",
                 color: selectedType === type ? "white" : "#4E4B46",
                 border: selectedType === type ? "none" : "1px solid #E5E7EB",
               }}
@@ -185,11 +191,15 @@ export function Home() {
           value={content}
           onChange={(e) => setContent(e.target.value)}
           placeholder="오늘의 인사이트를 기록하세요..."
-          className="min-h-[100px] mb-3 border-0 resize-none text-sm"
+          className="min-h-[100px] mb-3 resize-none text-sm focus:outline-none focus:ring-0"
           style={{
             backgroundColor: "white",
             color: "#333333",
             lineHeight: "1.6",
+            border: `1px solid ${
+              selectedType === "feedback" ? "#A3BFD9" : "#A8BBA8"
+            }`,
+            borderRadius: "0.5rem",
           }}
         />
 

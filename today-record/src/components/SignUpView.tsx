@@ -388,40 +388,174 @@ export function SignUpView() {
           >
             <div>
               <h3 className="mb-2" style={{ fontSize: "0.95rem" }}>
-                1. 개인정보 수집 항목
+                제1조 (목적)
               </h3>
               <p style={{ fontSize: "0.85rem", color: "#4E4B46" }}>
-                - 이메일 주소
-                <br />- 비밀번호 (암호화 저장)
+                본 약관은 myRecord(이하 “서비스”)가 제공하는 기록 및 AI 피드백
+                기능을 이용함에 있어, 이용자와 서비스 운영자 간의 권리·의무를
+                규정함을 목적으로 합니다.
               </p>
             </div>
             <div>
               <h3 className="mb-2" style={{ fontSize: "0.95rem" }}>
-                2. 수집 목적
+                제2조 (수집하는 개인정보 항목)
               </h3>
               <p style={{ fontSize: "0.85rem", color: "#4E4B46" }}>
-                - 회원 식별 및 계정 관리
-                <br />
-                - AI 기반 저널링 피드백 제공
-                <br />- 서비스 개선 및 사용자 경험 향상
+                서비스는 회원가입 및 기록 피드백 제공을 위해 아래 정보를
+                수집합니다.
+                {/* 모바일용 간단한 카드 레이아웃 */}
+                <div className="block md:hidden mt-4 space-y-2">
+                  <div className="bg-gray-50 rounded-lg border border-gray-200 p-3">
+                    <div className="flex items-center mb-2">
+                      <span className="text-sm font-medium text-gray-700">
+                        필수
+                      </span>
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      <div className="mb-1">
+                        <span className="font-medium">수집 항목:</span> 이메일,
+                        비밀번호, 닉네임
+                      </div>
+                      <div>
+                        <span className="font-medium">수집 목적:</span> 회원
+                        식별, 로그인, 계정 관리
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50 rounded-lg border border-gray-200 p-3">
+                    <div className="flex items-center mb-2">
+                      <span className="text-sm font-medium text-gray-700">
+                        선택
+                      </span>
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      <div className="mb-1">
+                        <span className="font-medium">수집 항목:</span> 생년,
+                        성별
+                      </div>
+                      <div>
+                        <span className="font-medium">수집 목적:</span> 개인화
+                        피드백 제공
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50 rounded-lg border border-gray-200 p-3">
+                    <div className="flex items-center mb-2">
+                      <span className="text-sm font-medium text-gray-700">
+                        자동 수집
+                      </span>
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      <div className="mb-1">
+                        <span className="font-medium">수집 항목:</span> 접속기기
+                        정보, 이용 로그, 쿠키
+                      </div>
+                      <div>
+                        <span className="font-medium">수집 목적:</span> 서비스
+                        안정성 및 품질 개선
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {/* 태블릿/데스크탑용 깔끔한 테이블 레이아웃 */}
+                <div className="hidden md:block mt-4">
+                  <div className="overflow-hidden rounded-lg border border-gray-200">
+                    <table className="w-full">
+                      <thead className="bg-gray-50">
+                        <tr>
+                          <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 border-b border-gray-200">
+                            구분
+                          </th>
+                          <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 border-b border-gray-200">
+                            수집 항목
+                          </th>
+                          <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 border-b border-gray-200">
+                            수집 목적
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white">
+                        <tr className="border-b border-gray-200">
+                          <td className="px-4 py-3 text-sm font-medium text-gray-700">
+                            필수
+                          </td>
+                          <td className="px-4 py-3 text-sm text-gray-600">
+                            이메일, 비밀번호, 닉네임
+                          </td>
+                          <td className="px-4 py-3 text-sm text-gray-600">
+                            회원 식별, 로그인, 계정 관리
+                          </td>
+                        </tr>
+                        <tr className="border-b border-gray-200">
+                          <td className="px-4 py-3 text-sm font-medium text-gray-700">
+                            선택
+                          </td>
+                          <td className="px-4 py-3 text-sm text-gray-600">
+                            생년, 성별
+                          </td>
+                          <td className="px-4 py-3 text-sm text-gray-600">
+                            개인화 피드백 제공
+                          </td>
+                        </tr>
+                        <tr>
+                          <td className="px-4 py-3 text-sm font-medium text-gray-700">
+                            수집
+                          </td>
+                          <td className="px-4 py-3 text-sm text-gray-600">
+                            접속기기 정보, 이용 로그, 쿠키
+                          </td>
+                          <td className="px-4 py-3 text-sm text-gray-600">
+                            서비스 안정성 및 품질 개선
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
               </p>
             </div>
             <div>
               <h3 className="mb-2" style={{ fontSize: "0.95rem" }}>
-                3. 보관 및 삭제 정책
+                제3조 (개인정보의 이용 목적)
               </h3>
               <p style={{ fontSize: "0.85rem", color: "#4E4B46" }}>
-                개인정보는 회원 탈퇴 시 즉시 삭제되며, 법령에 따라 보관이 필요한
-                경우를 제외하고는 별도로 보관하지 않습니다.
+                수집된 개인정보는 아래 목적으로 이용됩니다.
+                <br /> 1. 회원 식별 및 서비스 제공
+                <br /> 2. 기록 데이터 저장 및 피드백 분석
+                <br /> 3. 서비스 개선 및 신규 기능 개발
+                <br /> 4. 고객 문의 대응 및 공지사항 전달
               </p>
             </div>
             <div>
               <h3 className="mb-2" style={{ fontSize: "0.95rem" }}>
-                4. 동의 철회
+                제4조 (보관 및 파기)
               </h3>
               <p style={{ fontSize: "0.85rem", color: "#4E4B46" }}>
-                언제든지 계정 설정에서 회원 탈퇴를 통해 동의를 철회할 수
-                있습니다.
+                - 회원 탈퇴 시 모든 개인정보는 즉시 삭제됩니다.
+                <br /> - 단, 법령상 보존이 필요한 경우 관련 법령에 따라 일정
+                기간 보관 후 파기합니다.
+              </p>
+            </div>
+
+            <div>
+              <h3 className="mb-2" style={{ fontSize: "0.95rem" }}>
+                제5조 (이용자의 권리)
+              </h3>
+              <p style={{ fontSize: "0.85rem", color: "#4E4B46" }}>
+                이용자는 언제든지 자신의 개인정보를 조회, 수정, 삭제를 요청할 수
+                있으며, 문의 메일을 통해 요청할 수 있습니다.
+              </p>
+            </div>
+
+            <div>
+              <h3 className="mb-2" style={{ fontSize: "0.95rem" }}>
+                제6조 (기타)
+              </h3>
+              <p style={{ fontSize: "0.85rem", color: "#4E4B46" }}>
+                기타 개인정보 처리에 관한 세부 내용은 별도의 「개인정보
+                처리방침」에 따릅니다.
               </p>
             </div>
           </DialogDescription>
@@ -440,40 +574,52 @@ export function SignUpView() {
           >
             <div>
               <h3 className="mb-2" style={{ fontSize: "0.95rem" }}>
-                1. 데이터 활용 방식
+                제1조 (수집 및 활용 목적)
               </h3>
               <p style={{ fontSize: "0.85rem", color: "#4E4B46" }}>
-                사용자가 작성한 일상 기록은 AI 피드백 생성에 활용되며, 서비스
-                품질 향상을 위해 익명화된 형태로 학습 데이터로 사용될 수
-                있습니다.
+                서비스는 이용자의 기록 데이터를 바탕으로 AI 피드백을 제공합니다.
+                AI의 품질 향상을 위해 일부 데이터는 익명화 처리 후 학습 데이터로
+                활용 될 수 있습니다.
               </p>
             </div>
             <div>
               <h3 className="mb-2" style={{ fontSize: "0.95rem" }}>
-                2. 익명화 처리
+                제2조 (수집 및 처리 범위)
               </h3>
               <p style={{ fontSize: "0.85rem", color: "#4E4B46" }}>
-                학습에 활용되는 모든 데이터는 개인 식별이 불가능하도록 익명화
-                처리됩니다. 이메일 등 개인정보는 학습 데이터에 포함되지
-                않습니다.
+                1. 사용자가 작성한 기록의 본문 내용
+                <br /> 2. 피드백 결과 및 사용자 만족도 점수
+                <br /> 3. 비식별화된 메타데이터 (날짜, 키워드 등)
               </p>
             </div>
             <div>
               <h3 className="mb-2" style={{ fontSize: "0.95rem" }}>
-                3. 보안
+                제3조 (익명화 처리 방식)
               </h3>
               <p style={{ fontSize: "0.85rem", color: "#4E4B46" }}>
-                데이터는 암호화되어 안전하게 저장되며, 외부 유출 방지를 위한
-                보안 조치가 적용됩니다.
+                - 개인을 식별할 수 있는 정보(이메일, 이름 등)는 학습 전에 완전
+                제거됩니다.
+                <br /> - 학습 데이터는 통계적 분석 및 모델 개선 용도로만
+                사용되며, 외부 공개되지 않습니다.
               </p>
             </div>
             <div>
               <h3 className="mb-2" style={{ fontSize: "0.95rem" }}>
-                4. 동의 철회
+                제4조 (보관 기간)
               </h3>
               <p style={{ fontSize: "0.85rem", color: "#4E4B46" }}>
-                언제든지 계정 설정에서 AI 학습 활용 동의를 철회할 수 있으며,
-                철회 즉시 이후 데이터는 학습에 사용되지 않습니다.
+                회원 탈퇴 시, 학습용 데이터는 즉시 삭제되며, 이미 학습된 모델에
+                반영된 데이터는 개별 삭제가 불가능합니다.
+              </p>
+            </div>
+            <div>
+              <h3 className="mb-2" style={{ fontSize: "0.95rem" }}>
+                제5조 (문의처)
+              </h3>
+              <p style={{ fontSize: "0.85rem", color: "#4E4B46" }}>
+                AI 데이터 처리 관련 문의는 아래로 연락 가능합니다.
+                <br /> ✉️ goawmfhfl1@naver.com
+                <br /> 담당자: 개인정보보호 책임자 최재영
               </p>
             </div>
           </DialogDescription>

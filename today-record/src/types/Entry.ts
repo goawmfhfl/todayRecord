@@ -13,7 +13,7 @@ export type DailyFeedback = {
   recommendation: string;
 };
 
-export type ApiFeedbackPayload = {
+export type DailyFeedbackPayload = {
   date: string; // "2025-10-21"
   lesson: string;
   keywords: string[]; // ["#몰입", "#자기효능감", "#루틴"]

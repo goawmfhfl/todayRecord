@@ -356,7 +356,7 @@ export function LoginView({
         </form>
 
         {/* Additional Links */}
-        <div className="text-center mt-6 space-y-2">
+        {/* <div className="text-center mt-6 space-y-2">
           <button
             type="button"
             className="block mx-auto underline"
@@ -364,7 +364,7 @@ export function LoginView({
           >
             비밀번호를 잊으셨나요?
           </button>
-        </div>
+        </div> */}
       </div>
     </div>
   );

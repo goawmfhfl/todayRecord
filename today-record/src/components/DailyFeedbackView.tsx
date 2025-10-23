@@ -14,10 +14,10 @@ import { Badge } from "./ui/badge";
 import { Progress } from "./ui/progress";
 import { Card } from "./ui/card";
 import { Alert, AlertDescription } from "./ui/alert";
-import { ApiFeedbackPayload } from "../types/Entry";
+import { DailyFeedbackPayload } from "../types/Entry";
 
 type DailyFeedbackViewProps = {
-  feedback: ApiFeedbackPayload | null;
+  feedback: DailyFeedbackPayload | null;
   loading?: boolean;
   error?: string | null;
   onBack: () => void;
@@ -264,7 +264,7 @@ export function DailyFeedbackView({
               style={{ backgroundColor: "white", border: "1px solid #EFE9E3" }}
             >
               <div className="flex items-center gap-2 mb-3">
-                <Sparkles className="w-5 h-5" style={{ color: "#D08C60" }} />
+                <Sparkles className="w-5 h-5" style={{ color: "#B89A7A" }} />
                 <h2 style={{ color: "#333333", fontSize: "1.05rem" }}>
                   인사이트
                 </h2>
@@ -296,7 +296,7 @@ export function DailyFeedbackView({
                   <div className="flex items-center gap-2 mb-3">
                     <CheckCircle2
                       className="w-5 h-5"
-                      style={{ color: "#A8BBA8" }}
+                      style={{ color: "#7BA87B" }}
                     />
                     <h3 style={{ color: "#333333", fontSize: "1rem" }}>
                       잘한 점
@@ -326,7 +326,7 @@ export function DailyFeedbackView({
                   <div className="flex items-center gap-2 mb-3">
                     <TrendingUp
                       className="w-5 h-5"
-                      style={{ color: "#D08C60" }}
+                      style={{ color: "#B89A7A" }}
                     />
                     <h3 style={{ color: "#333333", fontSize: "1rem" }}>
                       개선하면 좋을 점
@@ -389,13 +389,19 @@ export function DailyFeedbackView({
                     {clampScore(feedback.focus_score)}/10
                   </span>
                 </div>
-                <Progress
-                  value={clampScore(feedback.focus_score) * 10}
-                  className="h-2"
-                  style={{
-                    backgroundColor: "#EFE9E3",
-                  }}
-                />
+                <div
+                  className="w-full rounded-full h-2 overflow-hidden"
+                  style={{ backgroundColor: "#EFE9E3" }}
+                >
+                  <div
+                    className="h-2 rounded-full transition-all duration-500 ease-out"
+                    style={{
+                      width: `${clampScore(feedback.focus_score) * 10}%`,
+                      background:
+                        "linear-gradient(90deg, #A8BBA8 0%, #6B7A6F 100%)",
+                    }}
+                  />
+                </div>
               </Card>
             )}
 
@@ -416,13 +422,19 @@ export function DailyFeedbackView({
                     {clampScore(feedback.satisfaction_score)}/10
                   </span>
                 </div>
-                <Progress
-                  value={clampScore(feedback.satisfaction_score) * 10}
-                  className="h-2"
-                  style={{
-                    backgroundColor: "#EFE9E3",
-                  }}
-                />
+                <div
+                  className="w-full rounded-full h-2 overflow-hidden"
+                  style={{ backgroundColor: "#EFE9E3" }}
+                >
+                  <div
+                    className="h-2 rounded-full transition-all duration-500 ease-out"
+                    style={{
+                      width: `${clampScore(feedback.satisfaction_score) * 10}%`,
+                      background:
+                        "linear-gradient(90deg, #D08C60 0%, #A3BFD9 100%)",
+                    }}
+                  />
+                </div>
               </Card>
             )}
           </div>
@@ -436,7 +448,7 @@ export function DailyFeedbackView({
               <div className="flex items-center gap-2 mb-3">
                 <Hash className="w-5 h-5" style={{ color: "#6B7A6F" }} />
                 <h2 style={{ color: "#333333", fontSize: "1.05rem" }}>
-                  지배적 토픽
+                  오늘의 테마
                 </h2>
               </div>
               <div className="flex flex-wrap gap-2">

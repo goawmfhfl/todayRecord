@@ -101,16 +101,16 @@ export function WeeklyFeedbackView({
                 <Card
                   className="p-5"
                   style={{
-                    backgroundColor: "#EFF6FF",
-                    border: "1px solid #BFDBFE",
+                    backgroundColor: "#F0F7F0",
+                    border: "1px solid #C8D5C8",
                   }}
                 >
                   <div className="flex items-center gap-2 mb-4">
                     <TrendingUp
                       className="w-5 h-5"
-                      style={{ color: "#3B82F6" }}
+                      style={{ color: "#7BA87B" }}
                     />
-                    <h3 style={{ color: "#1E40AF", fontSize: "1rem" }}>
+                    <h3 style={{ color: "#5A6B5A", fontSize: "1rem" }}>
                       상승 키워드
                     </h3>
                   </div>
@@ -120,7 +120,7 @@ export function WeeklyFeedbackView({
                         key={index}
                         className="rounded-full px-3 py-1.5"
                         style={{
-                          backgroundColor: "#3B82F6",
+                          backgroundColor: "#7BA87B",
                           color: "white",
                           fontSize: "0.85rem",
                         }}
@@ -138,16 +138,16 @@ export function WeeklyFeedbackView({
                 <Card
                   className="p-5"
                   style={{
-                    backgroundColor: "#FEF3C7",
-                    border: "1px solid #FDE68A",
+                    backgroundColor: "#F7F3F0",
+                    border: "1px solid #E5D5C8",
                   }}
                 >
                   <div className="flex items-center gap-2 mb-4">
                     <TrendingUp
                       className="w-5 h-5"
-                      style={{ color: "#D97706" }}
+                      style={{ color: "#B89A7A" }}
                     />
-                    <h3 style={{ color: "#92400E", fontSize: "1rem" }}>
+                    <h3 style={{ color: "#8B6F4F", fontSize: "1rem" }}>
                       감소 키워드
                     </h3>
                   </div>
@@ -157,7 +157,7 @@ export function WeeklyFeedbackView({
                         key={index}
                         className="rounded-full px-3 py-1.5"
                         style={{
-                          backgroundColor: "#D97706",
+                          backgroundColor: "#B89A7A",
                           color: "white",
                           fontSize: "0.85rem",
                         }}
@@ -381,27 +381,27 @@ export function WeeklyFeedbackView({
             <Card
               className="p-5"
               style={{
-                backgroundColor: "#EFF6FF",
-                border: "1px solid #BFDBFE",
+                backgroundColor: "#F0F7F0",
+                border: "1px solid #C8D5C8",
               }}
             >
               <div className="flex items-center gap-2 mb-4">
                 <CheckCircle2
                   className="w-5 h-5"
-                  style={{ color: "#3B82F6" }}
+                  style={{ color: "#7BA87B" }}
                 />
-                <h3 style={{ color: "#1E40AF", fontSize: "1rem" }}>강점</h3>
+                <h3 style={{ color: "#5A6B5A", fontSize: "1rem" }}>강점</h3>
               </div>
               <ul className="space-y-2.5">
                 {summary.strengths.map((strength, index) => (
                   <li key={index} className="flex items-start gap-2">
                     <div
                       className="w-1.5 h-1.5 rounded-full mt-2 flex-shrink-0"
-                      style={{ backgroundColor: "#3B82F6" }}
+                      style={{ backgroundColor: "#7BA87B" }}
                     />
                     <p
                       style={{
-                        color: "#1E3A8A",
+                        color: "#5A6B5A",
                         lineHeight: "1.6",
                         fontSize: "0.875rem",
                       }}
@@ -419,24 +419,24 @@ export function WeeklyFeedbackView({
             <Card
               className="p-5"
               style={{
-                backgroundColor: "#FFF7ED",
-                border: "1px solid #FED7AA",
+                backgroundColor: "#F7F3F0",
+                border: "1px solid #E5D5C8",
               }}
             >
               <div className="flex items-center gap-2 mb-4">
-                <AlertCircle className="w-5 h-5" style={{ color: "#F97316" }} />
-                <h3 style={{ color: "#9A3412", fontSize: "1rem" }}>약점</h3>
+                <AlertCircle className="w-5 h-5" style={{ color: "#B89A7A" }} />
+                <h3 style={{ color: "#8B6F4F", fontSize: "1rem" }}>약점</h3>
               </div>
               <ul className="space-y-2.5">
                 {summary.weaknesses.map((weakness, index) => (
                   <li key={index} className="flex items-start gap-2">
                     <div
                       className="w-1.5 h-1.5 rounded-full mt-2 flex-shrink-0"
-                      style={{ backgroundColor: "#F97316" }}
+                      style={{ backgroundColor: "#B89A7A" }}
                     />
                     <p
                       style={{
-                        color: "#9A3412",
+                        color: "#8B6F4F",
                         lineHeight: "1.6",
                         fontSize: "0.875rem",
                       }}

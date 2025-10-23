@@ -6,7 +6,7 @@ import type {
   Entry,
   DailyFeedback,
   PeriodSummary,
-  ApiFeedbackPayload,
+  DailyFeedbackPayload,
 } from "@/types/Entry";
 
 interface JournalContextType {
@@ -25,7 +25,7 @@ interface JournalContextType {
     customEndDate?: Date
   ) => void;
   viewDayDetail: (date: Date) => void;
-  fetchFeedback: (date: string) => Promise<ApiFeedbackPayload>;
+  fetchFeedback: (date: string) => Promise<DailyFeedbackPayload>;
 }
 
 const JournalContext = createContext<JournalContextType | undefined>(undefined);
@@ -215,11 +215,11 @@ export function JournalProvider({ children }: { children: ReactNode }) {
     router.push("/daydetail");
   };
 
-  const fetchFeedback = async (date: string): Promise<ApiFeedbackPayload> => {
+  const fetchFeedback = async (date: string): Promise<DailyFeedbackPayload> => {
     // Mock API call - 실제로는 서버에서 데이터를 가져와야 합니다
     return new Promise((resolve) => {
       setTimeout(() => {
-        const mockFeedback: ApiFeedbackPayload = {
+        const mockFeedback: DailyFeedbackPayload = {
           date,
           lesson:
             "오늘은 작은 변화에도 감사할 줄 아는 마음이 중요하다는 것을 배웠습니다.",

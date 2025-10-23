@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Card } from "./ui/card";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
+import { FileText, Sparkles } from "lucide-react";
 import type { Entry } from "@/types/Entry";
 
 // 캘린더 데이터 타입 정의
@@ -431,11 +432,32 @@ export function LogView({ entries, onSelectDate }: LogViewProps) {
               ))}
             </div>
           ) : (
-            <div className="text-center py-12">
-              <p style={{ color: "#4E4B46", opacity: 0.6, fontSize: "0.9rem" }}>
-                이 날에는 기록이 없습니다
-              </p>
-            </div>
+            <Card
+              className="p-8 text-center"
+              style={{
+                backgroundColor: "white",
+                border: "1px solid #EFE9E3",
+                borderRadius: "16px",
+              }}
+            >
+              <div className="flex flex-col items-center space-y-4">
+                <div
+                  className="w-16 h-16 rounded-full flex items-center justify-center"
+                  style={{ backgroundColor: "#F8F9FA" }}
+                >
+                  <FileText className="w-8 h-8" style={{ color: "#6B7A6F" }} />
+                </div>
+                <h3
+                  style={{
+                    color: "#333333",
+                    fontSize: "1rem",
+                    fontWeight: "500",
+                  }}
+                >
+                  기록이 없습니다
+                </h3>
+              </div>
+            </Card>
           )}
         </div>
 
@@ -446,7 +468,7 @@ export function LogView({ entries, onSelectDate }: LogViewProps) {
               onClick={() => {
                 router.push("/feedback");
               }}
-              className="rounded-full px-6 py-3"
+              className="rounded-full px-6 py-3 flex items-center gap-2"
               style={{
                 backgroundColor: "#A8BBA8",
                 color: "white",
@@ -454,7 +476,8 @@ export function LogView({ entries, onSelectDate }: LogViewProps) {
                 fontWeight: "500",
               }}
             >
-              🤖 AI 리뷰 보기
+              <Sparkles className="w-4 h-4" />
+              AI 리뷰 보기
             </Button>
           </div>
         )}
