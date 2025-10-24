@@ -2,20 +2,14 @@
 
 import { useState } from "react";
 import { AlertCircle } from "lucide-react";
+import { useLogin, useKakaoLogin } from "@/hooks/useLogin";
 import { AuthHeader } from "./forms/AuthHeader";
 import { EmailField } from "./forms/EmailField";
 import { PasswordField } from "./forms/PasswordField";
 import { SubmitButton } from "./forms/SubmitButton";
+import { useRouter } from "next/navigation";
 
-type LoginViewProps = {
-  onLoginSuccess: (email?: string) => void;
-  onNavigateToSignUp: () => void;
-};
-
-export function LoginView({
-  onLoginSuccess,
-  onNavigateToSignUp,
-}: LoginViewProps) {
+export function LoginView() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState<{
@@ -23,7 +17,11 @@ export function LoginView({
     password?: string;
     general?: string;
   }>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // React Query mutation 사용
+  const router = useRouter();
+  const loginMutation = useLogin();
+  const kakaoLoginMutation = useKakaoLogin();
 
   // Email validation
   const validateEmail = (email: string): boolean => {
@@ -55,28 +53,20 @@ export function LoginView({
       return;
     }
 
-    setIsSubmitting(true);
-
-    // Mock API call
-    setTimeout(() => {
-      // Check if user exists in localStorage (mock)
-      const storedUser = localStorage.getItem("myRecord_user");
-
-      if (storedUser) {
-        const user = JSON.parse(storedUser);
-        if (user.email === email) {
-          console.log("Login successful", { email });
-          setIsSubmitting(false);
-          onLoginSuccess(email);
-        } else {
-          setErrors({ general: "이메일 또는 비밀번호가 일치하지 않습니다." });
-          setIsSubmitting(false);
-        }
-      } else {
-        setErrors({ general: "등록되지 않은 이메일입니다." });
-        setIsSubmitting(false);
+    // React Query mutation 실행
+    loginMutation.mutate(
+      { email, password },
+      {
+        onSuccess: (data) => {
+          console.log("use Mutation 로그인 성공:", data);
+          router.push("/");
+        },
+        onError: (error: any) => {
+          console.error("use Mutation 로그인 실패:", error.message);
+          setErrors({ general: error.message });
+        },
       }
-    }, 1000);
+    );
   };
 
   const isFormValid = Boolean(email && password);
@@ -93,7 +83,11 @@ export function LoginView({
         />
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-5"
+          aria-busy={loginMutation.isPending}
+        >
           {/* General Error */}
           {errors.general && (
             <div
@@ -142,7 +136,7 @@ export function LoginView({
           />
 
           <SubmitButton
-            isLoading={isSubmitting}
+            isLoading={loginMutation.isPending}
             isValid={isFormValid}
             loadingText="로그인 중..."
             defaultText="로그인"
@@ -174,27 +168,28 @@ export function LoginView({
           {/* OAuth Buttons - Horizontal Icons */}
           <div className="flex items-center justify-center gap-4">
             {/* Kakao Login */}
-            <button
-              type="button"
-              onClick={() => {
-                console.log("Kakao OAuth login");
-                setTimeout(() => {
-                  onLoginSuccess("kakao_user@example.com");
-                }, 1000);
-              }}
-              className="w-12 h-12 rounded-full flex items-center justify-center transition-all hover:opacity-80"
-              style={{
-                backgroundColor: "#FEE500",
-              }}
-              title="카카오 로그인"
-            >
-              <svg width="24" height="24" viewBox="0 0 20 20" fill="none">
-                <path
-                  d="M10 3C5.58172 3 2 5.89543 2 9.5C2 11.6484 3.23828 13.5391 5.17188 14.6953L4.30469 17.8359C4.25781 18.0078 4.42969 18.1641 4.59375 18.0781L8.35938 15.8203C8.89844 15.9141 9.44531 15.9766 10 15.9766C14.4183 15.9766 18 13.0811 18 9.47656C18 5.87201 14.4183 3 10 3Z"
-                  fill="#000000"
-                />
-              </svg>
-            </button>
+            <div className="flex flex-col items-center">
+              <button
+                type="button"
+                onClick={() => {
+                  console.log("Kakao OAuth login");
+                  kakaoLoginMutation.mutate();
+                }}
+                className="w-12 h-12 rounded-full flex items-center justify-center transition-all hover:opacity-80"
+                style={{
+                  backgroundColor: "#FEE500",
+                }}
+                title="카카오 로그인 (기존 회원만)"
+                disabled={kakaoLoginMutation.isPending}
+              >
+                <svg width="24" height="24" viewBox="0 0 20 20" fill="none">
+                  <path
+                    d="M10 3C5.58172 3 2 5.89543 2 9.5C2 11.6484 3.23828 13.5391 5.17188 14.6953L4.30469 17.8359C4.25781 18.0078 4.42969 18.1641 4.59375 18.0781L8.35938 15.8203C8.89844 15.9141 9.44531 15.9766 10 15.9766C14.4183 15.9766 18 13.0811 18 9.47656C18 5.87201 14.4183 3 10 3Z"
+                    fill="#000000"
+                  />
+                </svg>
+              </button>
+            </div>
 
             {/* Naver Login */}
             <button
@@ -202,7 +197,7 @@ export function LoginView({
               onClick={() => {
                 console.log("Naver OAuth login");
                 setTimeout(() => {
-                  onLoginSuccess("naver_user@example.com");
+                  router.push("/");
                 }, 1000);
               }}
               className="w-12 h-12 rounded-full flex items-center justify-center transition-all hover:opacity-80"
@@ -223,7 +218,7 @@ export function LoginView({
               onClick={() => {
                 console.log("Google OAuth login");
                 setTimeout(() => {
-                  onLoginSuccess("google_user@example.com");
+                  router.push("/");
                 }, 1000);
               }}
               className="w-12 h-12 rounded-full flex items-center justify-center transition-all hover:bg-gray-50"
@@ -258,7 +253,7 @@ export function LoginView({
           <div className="text-center pt-4">
             <button
               type="button"
-              onClick={onNavigateToSignUp}
+              onClick={() => router.push("/signup")}
               className="underline"
               style={{ color: "#6B7A6F", fontSize: "0.9rem" }}
             >

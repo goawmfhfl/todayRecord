@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { useSignUp } from "@/hooks/useSignUp";
 import { AuthHeader } from "./forms/AuthHeader";
 import { EmailField } from "./forms/EmailField";
@@ -12,6 +13,17 @@ import { TermsModal } from "./modals/TermsModal";
 import { AIDataModal } from "./modals/AIDataModal";
 
 export function SignUpView() {
+  const searchParams = useSearchParams();
+  const [infoMessage, setInfoMessage] = useState<string | null>(null);
+
+  // URL 파라미터에서 메시지 확인
+  useEffect(() => {
+    const message = searchParams.get("message");
+    if (message) {
+      setInfoMessage(message);
+    }
+  }, [searchParams]);
+
   // 폼 데이터 상태 통합
   const [formData, setFormData] = useState({
     email: "",
@@ -159,6 +171,12 @@ export function SignUpView() {
             onShowAI={() => updateModals("showAI", true)}
             error={errors.terms}
           />
+
+          {infoMessage && (
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+              <p className="text-blue-800 text-sm">{infoMessage}</p>
+            </div>
+          )}
 
           {signUpMutation.error && (
             <ErrorMessage message={signUpMutation.error.message} />
