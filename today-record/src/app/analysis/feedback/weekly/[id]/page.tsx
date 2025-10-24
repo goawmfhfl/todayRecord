@@ -1,6 +1,9 @@
 "use client";
 
-import { WeeklyFeedbackView } from "@/components/WeeklyFeedbackView";
+import {
+  WeeklyFeedbackView,
+  WeeklySummaryCore,
+} from "@/components/WeeklyFeedbackView";
 import { useJournalStore } from "@/app/store/useJournalStore";
 import { useRouter } from "next/navigation";
 import { useState, useEffect, use } from "react";
@@ -13,7 +16,7 @@ export default function WeeklyViewPage({
 }) {
   const { summaries } = useJournalStore();
   const router = useRouter();
-  const [summary, setSummary] = useState<PeriodSummary | null>(null);
+  const [summary, setSummary] = useState<WeeklySummaryCore | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -30,10 +33,14 @@ export default function WeeklyViewPage({
         const foundSummary = summaries.find((s) => s.id === resolvedParams.id);
 
         if (foundSummary) {
-          setSummary(foundSummary);
+          // PeriodSummary를 WeeklySummaryCore로 변환
+          const weeklySummary = convertToWeeklySummary(foundSummary);
+          setSummary(weeklySummary);
         } else {
           // 더미 데이터 생성 (실제로는 API 호출)
-          const dummySummary = await generateDummySummary(resolvedParams.id);
+          const dummySummary = await generateDummyWeeklySummary(
+            resolvedParams.id
+          );
           setSummary(dummySummary);
         }
       } catch (err) {
@@ -46,7 +53,7 @@ export default function WeeklyViewPage({
   }, [resolvedParams.id, summaries]);
 
   const handleBack = () => {
-    router.push("/summaries");
+    router.push("/analysis");
   };
 
   // 로딩 상태
@@ -137,8 +144,33 @@ export default function WeeklyViewPage({
   return <WeeklyFeedbackView summary={summary} onBack={handleBack} />;
 }
 
-// 더미 데이터 생성 함수
-async function generateDummySummary(id: string): Promise<PeriodSummary> {
+// PeriodSummary를 WeeklySummaryCore로 변환하는 함수
+function convertToWeeklySummary(
+  periodSummary: PeriodSummary
+): WeeklySummaryCore {
+  return {
+    id: periodSummary.id,
+    type: "weekly",
+    period: periodSummary.period,
+    dateRange: periodSummary.dateRange,
+    week: periodSummary.week,
+    month: periodSummary.month,
+    representative_sentence: periodSummary.representative_sentence,
+    keyword_trend: periodSummary.keyword_trend,
+    behavior_pattern: periodSummary.behavior_pattern,
+    growth_curve: periodSummary.growth_curve,
+    insight_summary: periodSummary.insight_summary,
+    action_recommendation: periodSummary.action_recommendation,
+    strengths: periodSummary.strengths,
+    weaknesses: periodSummary.weaknesses,
+    growth_direction: periodSummary.growth_direction,
+  };
+}
+
+// 더미 주간 데이터 생성 함수
+async function generateDummyWeeklySummary(
+  id: string
+): Promise<WeeklySummaryCore> {
   const currentDate = new Date();
   const year = currentDate.getFullYear();
   const weekNumber = Math.ceil(
@@ -147,24 +179,15 @@ async function generateDummySummary(id: string): Promise<PeriodSummary> {
       1) /
       7
   );
-  const monthNumber = currentDate.getMonth() + 1;
-
-  const generatedId = `${year}-w${weekNumber
-    .toString()
-    .padStart(2, "0")}-${crypto.randomUUID().slice(0, 8)}`;
 
   return {
-    id: generatedId,
+    id: id,
     type: "weekly",
     period: `${year}년 ${weekNumber}주차`,
     dateRange: `${year}년 ${weekNumber}주차`,
-    weekNumber: weekNumber,
-    year,
     week: `${year}-W${weekNumber.toString().padStart(2, "0")}`,
-    totalEntries: Math.floor(Math.random() * 15) + 5,
-    createdAt: new Date(),
-
-    // 새로운 데이터 구조에 맞는 필드들
+    representative_sentence:
+      "새로운 루틴을 통해 찾은 집중력이 이번 주의 가장 큰 성과였습니다.",
     keyword_trend: {
       increased: ["집중력", "루틴", "협업", "성취"],
       decreased: ["불안", "피로", "완벽주의"],
@@ -182,34 +205,6 @@ async function generateDummySummary(id: string): Promise<PeriodSummary> {
       "짧은 휴식 시간을 더 규칙적으로 활용할 것",
       "팀과의 소통 빈도를 유지하면서 협업 효율성 높이기",
     ],
-
-    // 기존 필드들 (호환성을 위해 유지)
-    overview:
-      "이번 주는 집중력과 생산성 측면에서 긍정적인 변화가 있었습니다. 새로운 루틴을 도입하면서 시간 관리가 개선되었고, 프로젝트 진행도가 향상되었습니다.",
-    keyInsights: [
-      "새로운 시간 관리 기법이 효과적이었습니다",
-      "팀과의 소통이 프로젝트 성공에 중요했습니다",
-      "짧은 휴식이 집중력 향상에 도움이 되었습니다",
-    ],
-    emotionalTrends:
-      "안정적이고 긍정적인 감정 상태를 유지했습니다. 스트레스 관리가 잘 되었고, 성취감을 느끼는 순간들이 많았습니다.",
-    growthAreas: [
-      "더 체계적인 업무 계획 수립이 필요합니다",
-      "스트레스 관리 기법을 더 다양화해야 합니다",
-    ],
-    highlights: [
-      "중요한 프로젝트의 첫 번째 마일스톤을 달성했습니다",
-      "팀원들과의 협업이 원활하게 진행되었습니다",
-    ],
-    nextSteps:
-      "다음 주에는 더 체계적인 계획을 세우고, 우선순위를 명확히 하겠습니다.",
-    summary: "이번 주는 집중력과 생산성 측면에서 긍정적인 변화가 있었습니다.",
-    growth_area: "시간 관리와 우선순위 설정",
-    dominant_keywords: ["집중력", "생산성", "루틴", "협업", "성취"],
-    pattern_summary:
-      "아침 루틴을 정착시키면서 하루의 시작이 더 체계적이 되었습니다. 업무 시간을 블록 단위로 나누어 집중력을 높였습니다.",
-    trend_changes:
-      "이전 주 대비 업무 효율성이 20% 향상되었고, 스트레스 지수는 감소했습니다. 팀과의 소통 빈도가 증가했습니다.",
     strengths: [
       "체계적인 시간 관리 능력",
       "팀워크와 협업 능력",
@@ -222,7 +217,5 @@ async function generateDummySummary(id: string): Promise<PeriodSummary> {
       "거절하기 어려운 성격",
     ],
     growth_direction: "집중력 향상 → 생산성 증대 → 목표 달성 → 성취감 증진",
-    representative_sentence:
-      "새로운 루틴을 통해 찾은 집중력이 이번 주의 가장 큰 성과였습니다.",
   };
 }

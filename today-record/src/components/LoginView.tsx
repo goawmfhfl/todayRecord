@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { Eye, EyeOff, AlertCircle, Mail, Lock } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/Input";
+import { AlertCircle } from "lucide-react";
+import { AuthHeader } from "./forms/AuthHeader";
+import { EmailField } from "./forms/EmailField";
+import { PasswordField } from "./forms/PasswordField";
+import { SubmitButton } from "./forms/SubmitButton";
 
 type LoginViewProps = {
   onLoginSuccess: (email?: string) => void;
@@ -16,7 +18,6 @@ export function LoginView({
 }: LoginViewProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<{
     email?: string;
     password?: string;
@@ -78,7 +79,7 @@ export function LoginView({
     }, 1000);
   };
 
-  const isFormValid = email && password;
+  const isFormValid = Boolean(email && password);
 
   return (
     <div
@@ -86,15 +87,10 @@ export function LoginView({
       style={{ backgroundColor: "#FAFAF8" }}
     >
       <div className="w-full max-w-md">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="mb-2" style={{ color: "#6B7A6F", fontSize: "2rem" }}>
-            myRecord
-          </h1>
-          <p style={{ color: "#4E4B46", opacity: 0.8, fontSize: "1rem" }}>
-            기록하면, 피드백이 따라옵니다.
-          </p>
-        </div>
+        <AuthHeader
+          title="myRecord"
+          subtitle="기록하면, 피드백이 따라옵니다."
+        />
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-5">
@@ -117,124 +113,40 @@ export function LoginView({
             </div>
           )}
 
-          {/* Email Field */}
-          <div>
-            <label
-              className="block mb-2"
-              style={{ color: "#333333", fontSize: "0.9rem" }}
-            >
-              이메일
-            </label>
-            <div className="relative">
-              <Mail
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5"
-                style={{ color: "#6B7A6F", opacity: 0.5 }}
-              />
-              <Input
-                type="email"
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                  setErrors((prev) => ({
-                    ...prev,
-                    email: undefined,
-                    general: undefined,
-                  }));
-                }}
-                placeholder="example@gmail.com"
-                className="pl-11"
-                style={{
-                  borderColor: errors.email ? "#EF4444" : "#EFE9E3",
-                  backgroundColor: "white",
-                }}
-              />
-            </div>
-            {errors.email && (
-              <p
-                className="mt-1.5 flex items-center gap-1"
-                style={{ color: "#EF4444", fontSize: "0.8rem" }}
-              >
-                <AlertCircle className="w-3.5 h-3.5" />
-                {errors.email}
-              </p>
-            )}
-          </div>
-
-          {/* Password Field */}
-          <div>
-            <label
-              className="block mb-2"
-              style={{ color: "#333333", fontSize: "0.9rem" }}
-            >
-              비밀번호
-            </label>
-            <div className="relative">
-              <Lock
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5"
-                style={{ color: "#6B7A6F", opacity: 0.5 }}
-              />
-              <Input
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                  setErrors((prev) => ({
-                    ...prev,
-                    password: undefined,
-                    general: undefined,
-                  }));
-                }}
-                placeholder="비밀번호를 입력하세요"
-                className="pl-11 pr-10"
-                style={{
-                  borderColor: errors.password ? "#EF4444" : "#EFE9E3",
-                  backgroundColor: "white",
-                }}
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2"
-              >
-                {showPassword ? (
-                  <EyeOff
-                    className="w-5 h-5"
-                    style={{ color: "#6B7A6F", opacity: 0.5 }}
-                  />
-                ) : (
-                  <Eye
-                    className="w-5 h-5"
-                    style={{ color: "#6B7A6F", opacity: 0.5 }}
-                  />
-                )}
-              </button>
-            </div>
-            {errors.password && (
-              <p
-                className="mt-1.5 flex items-center gap-1"
-                style={{ color: "#EF4444", fontSize: "0.8rem" }}
-              >
-                <AlertCircle className="w-3.5 h-3.5" />
-                {errors.password}
-              </p>
-            )}
-          </div>
-
-          {/* Submit Button */}
-          <Button
-            type="submit"
-            disabled={!isFormValid || isSubmitting}
-            className="w-full py-6 rounded-xl transition-all"
-            style={{
-              backgroundColor:
-                isFormValid && !isSubmitting ? "#6B7A6F" : "#D1D5DB",
-              color: "white",
-              fontSize: "1rem",
-              opacity: isFormValid && !isSubmitting ? 1 : 0.6,
+          <EmailField
+            value={email}
+            onChange={(value) => {
+              setEmail(value);
+              setErrors((prev) => ({
+                ...prev,
+                email: undefined,
+                general: undefined,
+              }));
             }}
-          >
-            {isSubmitting ? "로그인 중..." : "로그인"}
-          </Button>
+            placeholder="example@gmail.com"
+            error={errors.email}
+          />
+
+          <PasswordField
+            value={password}
+            onChange={(value) => {
+              setPassword(value);
+              setErrors((prev) => ({
+                ...prev,
+                password: undefined,
+                general: undefined,
+              }));
+            }}
+            placeholder="비밀번호를 입력하세요"
+            error={errors.password}
+          />
+
+          <SubmitButton
+            isLoading={isSubmitting}
+            isValid={isFormValid}
+            loadingText="로그인 중..."
+            defaultText="로그인"
+          />
 
           {/* Divider */}
           <div className="relative py-3">
@@ -354,17 +266,6 @@ export function LoginView({
             </button>
           </div>
         </form>
-
-        {/* Additional Links */}
-        {/* <div className="text-center mt-6 space-y-2">
-          <button
-            type="button"
-            className="block mx-auto underline"
-            style={{ color: "#4E4B46", opacity: 0.6, fontSize: "0.85rem" }}
-          >
-            비밀번호를 잊으셨나요?
-          </button>
-        </div> */}
       </div>
     </div>
   );

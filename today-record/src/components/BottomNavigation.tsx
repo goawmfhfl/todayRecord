@@ -27,10 +27,10 @@ export function BottomNavigation() {
       isActive: pathname === "/logs",
     },
     {
-      href: "/summaries",
+      href: "/analysis",
       icon: BarChart3,
       label: "분석 & 요약",
-      isActive: pathname === "/summaries",
+      isActive: pathname === "/analysis",
     },
   ];
 

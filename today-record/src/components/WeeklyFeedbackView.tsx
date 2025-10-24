@@ -10,10 +10,51 @@ import {
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { Card } from "./ui/card";
-import type { PeriodSummary } from "@/types/Entry";
+
+// WeeklyFeedbackView에서 실제로 사용하는 데이터만을 정의한 타입
+export type WeeklySummaryCore = {
+  id: string;
+  type: "weekly";
+  period: string;
+  dateRange: string;
+  week?: string; // "2024-W01" 형식
+  month?: string; // "2024-01" 형식
+
+  // 대표 문장 (헤더에서 사용)
+  representative_sentence?: string;
+
+  // 키워드 트렌드
+  keyword_trend?: {
+    increased: string[];
+    decreased: string[];
+  };
+
+  // 행동 패턴
+  behavior_pattern?: string;
+
+  // 성장 곡선 메트릭
+  growth_curve?: {
+    focus_score_avg: number; // 0~10
+    satisfaction_trend: string | number; // "+12%" 형식 또는 숫자
+    consistency: number; // 0~1
+  };
+
+  // 핵심 인사이트
+  insight_summary?: string;
+
+  // 실행 제안
+  action_recommendation?: string[];
+
+  // 강점과 약점
+  strengths?: string[];
+  weaknesses?: string[];
+
+  // 성장 방향
+  growth_direction?: string;
+};
 
 type WeeklyFeedbackViewProps = {
-  summary: PeriodSummary;
+  summary: WeeklySummaryCore;
   onBack: () => void;
 };
 
@@ -262,7 +303,7 @@ export function WeeklyFeedbackView({
                 </Badge>
               </div>
               <p style={{ color: "#4E4B46", opacity: 0.7, fontSize: "0.8rem" }}>
-                전{summary.type === "weekly" ? "주" : "월"} 대비 변화
+                전주 대비 변화
               </p>
             </Card>
 
@@ -451,7 +492,7 @@ export function WeeklyFeedbackView({
         </div>
       )}
 
-      {/* 5. Growth Direction with Arrow Flow */}
+      {/* 8. Growth Direction with Arrow Flow */}
       {summary.growth_direction && (
         <Card
           className="p-6 mb-6"
@@ -502,7 +543,7 @@ export function WeeklyFeedbackView({
         </Card>
       )}
 
-      {/* 6. Bottom Quote Section */}
+      {/* 9. Bottom Quote Section */}
       {summary.representative_sentence && (
         <div
           className="p-5 rounded-2xl mb-6"
@@ -520,7 +561,7 @@ export function WeeklyFeedbackView({
                 className="mb-2"
                 style={{ color: "#6B7A6F", fontSize: "0.85rem" }}
               >
-                이번 {summary.type === "weekly" ? "주" : "달"}의 인사이트
+                이번 주의 인사이트
               </p>
               <p
                 className="italic"

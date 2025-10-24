@@ -2,6 +2,8 @@
 
 import { createContext, useContext, useState, ReactNode } from "react";
 import { useRouter } from "next/navigation";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import type {
   Entry,
   DailyFeedback,
@@ -29,6 +31,19 @@ interface JournalContextType {
 }
 
 const JournalContext = createContext<JournalContextType | undefined>(undefined);
+
+// React Query 클라이언트 생성
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000, // 5분
+      retry: 1,
+    },
+    mutations: {
+      retry: 1,
+    },
+  },
+});
 
 export function JournalProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
@@ -261,7 +276,12 @@ export function JournalProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <JournalContext.Provider value={value}>{children}</JournalContext.Provider>
+    <QueryClientProvider client={queryClient}>
+      <JournalContext.Provider value={value}>
+        {children}
+      </JournalContext.Provider>
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
   );
 }
 

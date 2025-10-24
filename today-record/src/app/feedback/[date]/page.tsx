@@ -5,7 +5,7 @@ import { useJournal } from "../../providers";
 import { DailyFeedbackView } from "@/components/DailyFeedbackView";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
-import { ApiFeedbackPayload } from "@/types/Entry";
+import { DailyFeedbackPayload } from "@/types/Entry";
 
 export default function DateFeedbackPage() {
   const params = useParams();
@@ -28,7 +28,7 @@ export default function DateFeedbackPage() {
   const generateFeedbackForDate = (
     date: string,
     entries: any[]
-  ): ApiFeedbackPayload => {
+  ): DailyFeedbackPayload => {
     return {
       date: date,
       lesson:

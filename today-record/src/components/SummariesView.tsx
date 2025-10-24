@@ -157,7 +157,7 @@ export function SummariesView({
                   key={summary.id}
                   className="p-4 cursor-pointer transition-all hover:shadow-md active:scale-[0.99]"
                   onClick={() =>
-                    router.push(`/summaries/feedback/weekly/${summary.id}`)
+                    router.push(`/analysis/feedback/weekly/${summary.id}`)
                   }
                   style={{
                     backgroundColor: "white",
@@ -291,7 +291,7 @@ export function SummariesView({
                   key={summary.id}
                   className="p-4 cursor-pointer transition-all hover:shadow-md active:scale-[0.99]"
                   onClick={() =>
-                    router.push(`/summaries/feedback/monthly/${summary.id}`)
+                    router.push(`/analysis/feedback/monthly/${summary.id}`)
                   }
                   style={{
                     backgroundColor: "white",

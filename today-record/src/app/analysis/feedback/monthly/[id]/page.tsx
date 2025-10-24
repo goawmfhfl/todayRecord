@@ -52,7 +52,7 @@ export default function MonthlyViewPage({
   }, [resolvedParams.id, summaries]);
 
   const handleBack = () => {
-    router.push("/summaries");
+    router.push("/analysis");
   };
 
   // 로딩 상태

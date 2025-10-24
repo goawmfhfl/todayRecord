@@ -4,12 +4,12 @@ import { DailyFeedbackView } from "@/components/DailyFeedbackView";
 import { useJournal } from "@/app/providers";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import { ApiFeedbackPayload } from "@/types/Entry";
+import { DailyFeedbackPayload } from "@/types/Entry";
 
 export default function FeedbackPage() {
   const { fetchFeedback } = useJournal();
   const router = useRouter();
-  const [feedback, setFeedback] = useState<ApiFeedbackPayload | null>(null);
+  const [feedback, setFeedback] = useState<DailyFeedbackPayload | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
