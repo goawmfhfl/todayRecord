@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { AlertCircle } from "lucide-react";
-import { useLogin, useKakaoLogin } from "@/hooks/useLogin";
+import { useLogin } from "@/hooks/useLogin";
+import { useKakaoLogin } from "@/hooks/useKakaoLogin";
 import { AuthHeader } from "./forms/AuthHeader";
 import { EmailField } from "./forms/EmailField";
 import { PasswordField } from "./forms/PasswordField";
@@ -190,27 +191,6 @@ export function LoginView() {
                 </svg>
               </button>
             </div>
-
-            {/* Naver Login */}
-            <button
-              type="button"
-              onClick={() => {
-                console.log("Naver OAuth login");
-                setTimeout(() => {
-                  router.push("/");
-                }, 1000);
-              }}
-              className="w-12 h-12 rounded-full flex items-center justify-center transition-all hover:opacity-80"
-              style={{
-                backgroundColor: "#03C75A",
-              }}
-              title="네이버 로그인"
-            >
-              <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
-                <path d="M11.5 10L6.5 3H6v14h4.5V10z" fill="#FFFFFF" />
-                <path d="M8.5 10l5 7H14V3H9.5v7z" fill="#FFFFFF" />
-              </svg>
-            </button>
 
             {/* Google Login */}
             <button

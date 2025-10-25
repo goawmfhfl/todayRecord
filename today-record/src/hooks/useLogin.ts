@@ -63,11 +63,6 @@ const loginUser = async (data: LoginData): Promise<LoginResponse> => {
       throw new LoginError("로그인에 실패했습니다.");
     }
 
-    console.log("로그인 성공:", {
-      userId: authData.user.id,
-      email: authData.user.email,
-    });
-
     return authData;
   } catch (error) {
     if (error instanceof LoginError) {
@@ -82,32 +77,6 @@ const loginUser = async (data: LoginData): Promise<LoginResponse> => {
   }
 };
 
-// 카카오 로그인 함수
-const loginWithKakao = async (): Promise<void> => {
-  try {
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: "kakao",
-      options: {
-        redirectTo: `http://localhost:3001/auth/callback`,
-        scopes: "profile_nickname",
-      },
-    });
-
-    if (error) {
-      console.error("카카오 로그인 에러:", error);
-      throw new LoginError("카카오 로그인에 실패했습니다.");
-    }
-
-    console.log("카카오 로그인 시작:", data);
-  } catch (error) {
-    if (error instanceof LoginError) {
-      throw error;
-    }
-    console.error("카카오 로그인 중 예상치 못한 에러:", error);
-    throw new LoginError("카카오 로그인 중 오류가 발생했습니다.");
-  }
-};
-
 // 로그인 훅
 export const useLogin = () => {
   const router = useRouter();
@@ -116,28 +85,10 @@ export const useLogin = () => {
     mutationFn: loginUser,
     onSuccess: (data) => {
       console.log("로그인 성공:", data.user);
-
-      // 성공 시 메인 페이지로 리다이렉트
       router.push("/");
     },
     onError: (error: LoginError) => {
       console.error("로그인 실패:", error.message);
-    },
-  });
-};
-
-// 카카오 로그인 훅
-export const useKakaoLogin = () => {
-  const router = useRouter();
-
-  return useMutation({
-    mutationFn: loginWithKakao,
-    onSuccess: () => {
-      console.log("카카오 로그인 시작됨");
-      // OAuth 리다이렉트가 자동으로 처리됨
-    },
-    onError: (error: LoginError) => {
-      console.error("카카오 로그인 실패:", error.message);
     },
   });
 };
