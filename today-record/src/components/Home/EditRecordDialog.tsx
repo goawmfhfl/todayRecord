@@ -9,6 +9,7 @@ import {
   DialogFooter,
 } from "../ui/dialog";
 import { useUpdateRecord, type Record } from "../../hooks/useRecords";
+import { RECORD_TYPES } from "../../constants";
 
 interface EditRecordDialogProps {
   record: Record | null;
@@ -22,14 +23,16 @@ export function EditRecordDialog({
   onOpenChange,
 }: EditRecordDialogProps) {
   const [editContent, setEditContent] = useState("");
-  const [editType, setEditType] = useState<Record["type"]>("insight");
+  const [editType, setEditType] = useState<Record["type"]>(
+    RECORD_TYPES.INSIGHT
+  );
   const updateRecordMutation = useUpdateRecord();
 
   const getTypeLabel = (type: Record["type"]) => {
     switch (type) {
-      case "insight":
+      case RECORD_TYPES.INSIGHT:
         return "인사이트";
-      case "feedback":
+      case RECORD_TYPES.FEEDBACK:
         return "피드백";
     }
   };
@@ -76,21 +79,23 @@ export function EditRecordDialog({
 
         <div className="space-y-4 py-4">
           <div className="flex gap-3">
-            {(["insight", "feedback"] as const).map((type) => (
-              <button
-                key={type}
-                onClick={() => setEditType(type)}
-                className="px-4 py-2 rounded-full transition-all"
-                style={{
-                  backgroundColor:
-                    editType === type ? "#A8BBA8" : "transparent",
-                  color: editType === type ? "white" : "#4E4B46",
-                  border: editType === type ? "none" : "1px solid #E5E7EB",
-                }}
-              >
-                {getTypeLabel(type)}
-              </button>
-            ))}
+            {([RECORD_TYPES.INSIGHT, RECORD_TYPES.FEEDBACK] as const).map(
+              (type) => (
+                <button
+                  key={type}
+                  onClick={() => setEditType(type)}
+                  className="px-4 py-2 rounded-full transition-all"
+                  style={{
+                    backgroundColor:
+                      editType === type ? "#A8BBA8" : "transparent",
+                    color: editType === type ? "white" : "#4E4B46",
+                    border: editType === type ? "none" : "1px solid #E5E7EB",
+                  }}
+                >
+                  {getTypeLabel(type)}
+                </button>
+              )
+            )}
           </div>
 
           <Textarea

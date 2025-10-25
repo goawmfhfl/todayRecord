@@ -1,5 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
+import { QUERY_KEYS, API_ENDPOINTS, ERROR_MESSAGES } from "@/constants";
+import { getCurrentUserId } from "./useCurrentUser";
 
 // Record 타입 정의
 export interface Record {
@@ -31,19 +33,7 @@ class RecordError extends Error {
   }
 }
 
-// 현재 사용자 ID 가져오기
-const getCurrentUserId = async (): Promise<string> => {
-  const {
-    data: { user },
-    error,
-  } = await supabase.auth.getUser();
-
-  if (error || !user) {
-    throw new RecordError("로그인이 필요합니다.");
-  }
-
-  return user.id;
-};
+// 현재 사용자 ID 가져오기 함수는 useCurrentUser 훅에서 import
 
 // Records 조회 함수
 const fetchRecords = async (): Promise<Record[]> => {
@@ -51,13 +41,15 @@ const fetchRecords = async (): Promise<Record[]> => {
     const userId = await getCurrentUserId();
 
     const { data, error } = await supabase
-      .from("records")
+      .from(API_ENDPOINTS.RECORDS)
       .select("*")
       .eq("user_id", userId)
       .order("created_at", { ascending: false });
 
     if (error) {
-      throw new RecordError(`기록 조회 실패: ${error.message}`);
+      throw new RecordError(
+        `${ERROR_MESSAGES.RECORD_FETCH_FAILED}: ${error.message}`
+      );
     }
 
     return data || [];
@@ -66,7 +58,7 @@ const fetchRecords = async (): Promise<Record[]> => {
       throw error;
     }
     console.error("기록 조회 중 예상치 못한 에러:", error);
-    throw new RecordError("기록 조회 중 오류가 발생했습니다.");
+    throw new RecordError(ERROR_MESSAGES.UNEXPECTED_ERROR);
   }
 };
 
@@ -76,7 +68,7 @@ const createRecord = async (data: CreateRecordData): Promise<Record> => {
     const userId = await getCurrentUserId();
 
     const { data: newRecord, error } = await supabase
-      .from("records")
+      .from(API_ENDPOINTS.RECORDS)
       .insert({
         user_id: userId,
         type: data.type,
@@ -86,7 +78,9 @@ const createRecord = async (data: CreateRecordData): Promise<Record> => {
       .single();
 
     if (error) {
-      throw new RecordError(`기록 생성 실패: ${error.message}`);
+      throw new RecordError(
+        `${ERROR_MESSAGES.RECORD_CREATE_FAILED}: ${error.message}`
+      );
     }
 
     return newRecord;
@@ -95,7 +89,7 @@ const createRecord = async (data: CreateRecordData): Promise<Record> => {
       throw error;
     }
     console.error("기록 생성 중 예상치 못한 에러:", error);
-    throw new RecordError("기록 생성 중 오류가 발생했습니다.");
+    throw new RecordError(ERROR_MESSAGES.UNEXPECTED_ERROR);
   }
 };
 
@@ -108,7 +102,7 @@ const updateRecord = async (
     const userId = await getCurrentUserId();
 
     const { data: updatedRecord, error } = await supabase
-      .from("records")
+      .from(API_ENDPOINTS.RECORDS)
       .update(data)
       .eq("id", id)
       .eq("user_id", userId) // 본인 것만 수정 가능
@@ -116,7 +110,9 @@ const updateRecord = async (
       .single();
 
     if (error) {
-      throw new RecordError(`기록 수정 실패: ${error.message}`);
+      throw new RecordError(
+        `${ERROR_MESSAGES.RECORD_UPDATE_FAILED}: ${error.message}`
+      );
     }
 
     return updatedRecord;
@@ -125,7 +121,7 @@ const updateRecord = async (
       throw error;
     }
     console.error("기록 수정 중 예상치 못한 에러:", error);
-    throw new RecordError("기록 수정 중 오류가 발생했습니다.");
+    throw new RecordError(ERROR_MESSAGES.UNEXPECTED_ERROR);
   }
 };
 
@@ -135,27 +131,29 @@ const deleteRecord = async (id: number): Promise<void> => {
     const userId = await getCurrentUserId();
 
     const { error } = await supabase
-      .from("records")
+      .from(API_ENDPOINTS.RECORDS)
       .delete()
       .eq("id", id)
       .eq("user_id", userId); // 본인 것만 삭제 가능
 
     if (error) {
-      throw new RecordError(`기록 삭제 실패: ${error.message}`);
+      throw new RecordError(
+        `${ERROR_MESSAGES.RECORD_DELETE_FAILED}: ${error.message}`
+      );
     }
   } catch (error) {
     if (error instanceof RecordError) {
       throw error;
     }
     console.error("기록 삭제 중 예상치 못한 에러:", error);
-    throw new RecordError("기록 삭제 중 오류가 발생했습니다.");
+    throw new RecordError(ERROR_MESSAGES.UNEXPECTED_ERROR);
   }
 };
 
 // Records 조회 훅
 export const useRecords = () => {
   return useQuery({
-    queryKey: ["records"],
+    queryKey: [QUERY_KEYS.RECORDS],
     queryFn: fetchRecords,
     staleTime: 1000 * 60 * 5, // 5분간 캐시 유지
   });
@@ -169,7 +167,7 @@ export const useCreateRecord = () => {
     mutationFn: createRecord,
     onSuccess: () => {
       // 성공 시 records 쿼리 무효화하여 새로고침
-      queryClient.invalidateQueries({ queryKey: ["records"] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.RECORDS] });
     },
     onError: (error: RecordError) => {
       console.error("기록 생성 실패:", error.message);
@@ -186,7 +184,7 @@ export const useUpdateRecord = () => {
       updateRecord(id, data),
     onSuccess: () => {
       // 성공 시 records 쿼리 무효화하여 새로고침
-      queryClient.invalidateQueries({ queryKey: ["records"] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.RECORDS] });
     },
     onError: (error: RecordError) => {
       console.error("기록 수정 실패:", error.message);
@@ -202,7 +200,7 @@ export const useDeleteRecord = () => {
     mutationFn: deleteRecord,
     onSuccess: () => {
       // 성공 시 records 쿼리 무효화하여 새로고침
-      queryClient.invalidateQueries({ queryKey: ["records"] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.RECORDS] });
     },
     onError: (error: RecordError) => {
       console.error("기록 삭제 실패:", error.message);

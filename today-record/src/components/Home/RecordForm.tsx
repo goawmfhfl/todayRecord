@@ -3,21 +3,24 @@ import { Plus } from "lucide-react";
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
 import { useCreateRecord, type Record } from "../../hooks/useRecords";
+import { RECORD_TYPES } from "../../constants";
 
 interface RecordFormProps {
   onSuccess?: () => void;
 }
 
 export function RecordForm({ onSuccess }: RecordFormProps) {
-  const [selectedType, setSelectedType] = useState<Record["type"]>("insight");
+  const [selectedType, setSelectedType] = useState<Record["type"]>(
+    RECORD_TYPES.INSIGHT
+  );
   const [content, setContent] = useState("");
   const createRecordMutation = useCreateRecord();
 
   const getTypeLabel = (type: Record["type"]) => {
     switch (type) {
-      case "insight":
+      case RECORD_TYPES.INSIGHT:
         return "인사이트";
-      case "feedback":
+      case RECORD_TYPES.FEEDBACK:
         return "피드백";
     }
   };
@@ -45,25 +48,27 @@ export function RecordForm({ onSuccess }: RecordFormProps) {
       style={{ backgroundColor: "#F3F4F6" }}
     >
       <div className="flex gap-2 mb-4">
-        {(["insight", "feedback"] as const).map((type) => (
-          <button
-            key={type}
-            onClick={() => setSelectedType(type)}
-            className="px-3 py-1.5 rounded-full transition-all text-sm"
-            style={{
-              backgroundColor:
-                selectedType === type
-                  ? type === "feedback"
-                    ? "#A3BFD9"
-                    : "#A8BBA8"
-                  : "transparent",
-              color: selectedType === type ? "white" : "#4E4B46",
-              border: selectedType === type ? "none" : "1px solid #E5E7EB",
-            }}
-          >
-            {getTypeLabel(type)}
-          </button>
-        ))}
+        {([RECORD_TYPES.INSIGHT, RECORD_TYPES.FEEDBACK] as const).map(
+          (type) => (
+            <button
+              key={type}
+              onClick={() => setSelectedType(type)}
+              className="px-3 py-1.5 rounded-full transition-all text-sm"
+              style={{
+                backgroundColor:
+                  selectedType === type
+                    ? type === RECORD_TYPES.FEEDBACK
+                      ? "#A3BFD9"
+                      : "#A8BBA8"
+                    : "transparent",
+                color: selectedType === type ? "white" : "#4E4B46",
+                border: selectedType === type ? "none" : "1px solid #E5E7EB",
+              }}
+            >
+              {getTypeLabel(type)}
+            </button>
+          )
+        )}
       </div>
 
       <Textarea
@@ -76,7 +81,7 @@ export function RecordForm({ onSuccess }: RecordFormProps) {
           color: "#333333",
           lineHeight: "1.6",
           border: `1px solid ${
-            selectedType === "feedback" ? "#A3BFD9" : "#A8BBA8"
+            selectedType === RECORD_TYPES.FEEDBACK ? "#A3BFD9" : "#A8BBA8"
           }`,
           borderRadius: "0.5rem",
         }}
