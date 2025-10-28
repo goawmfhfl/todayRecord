@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Sparkles, LogOut, User } from "lucide-react";
 import { Button } from "./ui/button";
 import { useRecords, type Record } from "../hooks/useRecords";
@@ -8,6 +9,8 @@ import { EditRecordDialog } from "./Home/EditRecordDialog";
 import { DeleteRecordDialog } from "./Home/DeleteRecordDialog";
 
 export function Home() {
+  const router = useRouter();
+
   // React Query 훅들
   const { data: records = [], isLoading, error } = useRecords();
 
@@ -28,6 +31,12 @@ export function Home() {
 
   const handleDelete = (id: number) => {
     setDeletingRecordId(id);
+  };
+
+  const handleOpenDailyFeedback = () => {
+    // 오늘 날짜로 피드백 페이지 이동
+    const today = new Date().toISOString().split("T")[0];
+    router.push(`/daily?date=${today}`);
   };
 
   return (
@@ -107,10 +116,7 @@ export function Home() {
       {todayRecords.length > 0 && (
         <div className="fixed bottom-20 left-0 right-0 flex justify-center px-4">
           <Button
-            onClick={() => {
-              // TODO: 피드백 생성 로직 구현
-              console.log("피드백 생성");
-            }}
+            onClick={handleOpenDailyFeedback}
             className="rounded-full shadow-lg"
             style={{
               backgroundColor: "#6B7A6F",
