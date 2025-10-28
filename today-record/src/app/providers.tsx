@@ -253,7 +253,6 @@ export function JournalProvider({ children }: { children: ReactNode }) {
             "내일은 오전 중 짧은 산책을 추가하고, 점심 후 10분간 명상 시간을 가져보세요. 감정 에너지를 재충전할 수 있을 거예요.",
           focus_score: 8,
           satisfaction_score: 7,
-          dominant_topics: ["성장", "집중", "루틴", "자기관리"],
         };
         resolve(mockFeedback);
       }, 1000);

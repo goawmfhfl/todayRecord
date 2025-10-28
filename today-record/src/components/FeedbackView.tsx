@@ -432,36 +432,6 @@ export function DailyFeedbackView() {
             )}
           </div>
 
-          {/* 8. Dominant Topics */}
-          {feedback.dominant_topics && feedback.dominant_topics.length > 0 && (
-            <Card
-              className="p-5"
-              style={{ backgroundColor: "white", border: "1px solid #EFE9E3" }}
-            >
-              <div className="flex items-center gap-2 mb-3">
-                <Hash className="w-5 h-5" style={{ color: "#6B7A6F" }} />
-                <h2 style={{ color: "#333333", fontSize: "1.05rem" }}>
-                  지배적 토픽
-                </h2>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {feedback.dominant_topics.map((topic, index) => (
-                  <Badge
-                    key={index}
-                    className="rounded-full px-3 py-1.5"
-                    style={{
-                      backgroundColor: "#A8BBA8",
-                      color: "white",
-                      fontSize: "0.85rem",
-                    }}
-                  >
-                    {topic}
-                  </Badge>
-                ))}
-              </div>
-            </Card>
-          )}
-
           {/* Action Button */}
           <div className="flex justify-center pt-4">
             <Button

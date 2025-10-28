@@ -11,9 +11,8 @@ import {
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
-import { Progress } from "./ui/progress";
 import { Card } from "./ui/card";
-import { Alert, AlertDescription } from "./ui/alert";
+import { LoadingState } from "./ui/loading-state";
 import { DailyFeedbackPayload } from "../types/Entry";
 
 type DailyFeedbackViewProps = {
@@ -92,78 +91,16 @@ export function DailyFeedbackView({
         </p>
       </header>
 
-      {/* Loading State */}
-      {loadingState === "loading" && (
-        <div className="text-center py-16">
-          <div className="animate-pulse">
-            <div
-              className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center"
-              style={{ backgroundColor: "#EFE9E3" }}
-            >
-              <Sparkles className="w-8 h-8" style={{ color: "#6B7A6F" }} />
-            </div>
-            <p style={{ color: "#4E4B46", fontSize: "0.95rem" }}>
-              피드백을 불러오는 중…
-            </p>
-          </div>
-        </div>
-      )}
-
-      {/* Error State */}
-      {loadingState === "error" && (
-        <div className="py-8">
-          <Alert
-            className="mb-6"
-            style={{
-              backgroundColor: "#FEF2F2",
-              borderColor: "#FCA5A5",
-              color: "#991B1B",
-            }}
-          >
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
-          <div className="flex justify-center">
-            <Button
-              onClick={onBack}
-              style={{
-                backgroundColor: "#6B7A6F",
-                color: "white",
-              }}
-            >
-              돌아가기
-            </Button>
-          </div>
-        </div>
-      )}
-
-      {/* Empty State */}
-      {loadingState === "empty" && (
-        <div className="text-center py-16">
-          <div
-            className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center"
-            style={{ backgroundColor: "#EFE9E3" }}
-          >
-            <Eye className="w-8 h-8" style={{ color: "#A0A0A0" }} />
-          </div>
-          <p className="mb-2" style={{ color: "#4E4B46", fontSize: "0.95rem" }}>
-            오늘 데이터가 없습니다
-          </p>
-          <p
-            className="mb-6"
-            style={{ color: "#4E4B46", opacity: 0.6, fontSize: "0.85rem" }}
-          >
-            일상 기록을 먼저 작성해주세요
-          </p>
-          <Button
-            onClick={onBack}
-            style={{
-              backgroundColor: "#6B7A6F",
-              color: "white",
-            }}
-          >
-            돌아가기
-          </Button>
-        </div>
+      {/* Loading/Error/Empty State */}
+      {loadingState !== "success" && (
+        <LoadingState
+          state={loadingState}
+          error={error}
+          onBack={onBack}
+          loadingMessage="피드백을 불러오는 중…"
+          emptyMessage="오늘 데이터가 없습니다"
+          emptySubMessage="일상 기록을 먼저 작성해주세요"
+        />
       )}
 
       {/* Success State - Display Feedback */}
@@ -438,36 +375,6 @@ export function DailyFeedbackView({
               </Card>
             )}
           </div>
-
-          {/* 8. Dominant Topics */}
-          {feedback.dominant_topics && feedback.dominant_topics.length > 0 && (
-            <Card
-              className="p-5"
-              style={{ backgroundColor: "white", border: "1px solid #EFE9E3" }}
-            >
-              <div className="flex items-center gap-2 mb-3">
-                <Hash className="w-5 h-5" style={{ color: "#6B7A6F" }} />
-                <h2 style={{ color: "#333333", fontSize: "1.05rem" }}>
-                  오늘의 테마
-                </h2>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {feedback.dominant_topics.map((topic, index) => (
-                  <Badge
-                    key={index}
-                    className="rounded-full px-3 py-1.5"
-                    style={{
-                      backgroundColor: "#A8BBA8",
-                      color: "white",
-                      fontSize: "0.85rem",
-                    }}
-                  >
-                    {topic}
-                  </Badge>
-                ))}
-              </div>
-            </Card>
-          )}
 
           {/* Action Button */}
           <div className="flex justify-center pt-4">

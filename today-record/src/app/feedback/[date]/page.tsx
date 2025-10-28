@@ -55,10 +55,6 @@ export default function DateFeedbackPage() {
         "내일은 오전 중 짧은 산책을 추가하고, 점심 후 10분간 명상 시간을 가져보세요. 감정 에너지를 재충전할 수 있을 거예요.",
       focus_score: entries.length > 0 ? 7.5 : 6.0,
       satisfaction_score: entries.length > 0 ? 8.2 : 7.0,
-      dominant_topics:
-        entries.length > 0
-          ? ["성장", "학습", "목표"]
-          : ["휴식", "평화", "성찰"],
     };
   };
 

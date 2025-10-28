@@ -26,7 +26,6 @@ export type DailyFeedbackPayload = {
   focus_tomorrow: string;
   focus_score: number; // 0~10
   satisfaction_score: number; // 0~10
-  dominant_topics: string[]; // ["성장","집중","루틴"]
 };
 
 export type PeriodSummary = {
