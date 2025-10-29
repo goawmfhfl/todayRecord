@@ -11,14 +11,12 @@ import { DeleteRecordDialog } from "./Home/DeleteRecordDialog";
 export function Home() {
   const router = useRouter();
 
-  // React Query 훅들
   const { data: records = [], isLoading, error } = useRecords();
 
-  // 다이얼로그 상태
   const [editingRecord, setEditingRecord] = useState<Record | null>(null);
   const [deletingRecordId, setDeletingRecordId] = useState<number | null>(null);
+  const today = new Date().toISOString().split("T")[0];
 
-  // 오늘 기록 필터링
   const todayRecords = records.filter((record) => {
     const today = new Date();
     const recordDate = new Date(record.kst_date);
@@ -33,9 +31,7 @@ export function Home() {
     setDeletingRecordId(id);
   };
 
-  const handleOpenDailyFeedback = () => {
-    // 오늘 날짜로 피드백 페이지 이동
-    const today = new Date().toISOString().split("T")[0];
+  const handleOpenDailyFeedback = async () => {
     router.push(`/daily?date=${today}`);
   };
 
@@ -100,10 +96,8 @@ export function Home() {
         </div>
       </header>
 
-      {/* Record Form */}
       <RecordForm />
 
-      {/* Record List */}
       <RecordList
         records={records}
         isLoading={isLoading}
@@ -112,7 +106,6 @@ export function Home() {
         onDelete={handleDelete}
       />
 
-      {/* Generate Feedback Button */}
       {todayRecords.length > 0 && (
         <div className="fixed bottom-20 left-0 right-0 flex justify-center px-4">
           <Button
@@ -131,7 +124,6 @@ export function Home() {
         </div>
       )}
 
-      {/* Dialogs */}
       <EditRecordDialog
         record={editingRecord}
         open={!!editingRecord}

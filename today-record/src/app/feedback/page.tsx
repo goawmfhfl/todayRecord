@@ -1,39 +1,22 @@
 "use client";
 
 import { DailyFeedbackView } from "@/components/DailyFeedbackView";
-import { useJournal } from "@/app/providers";
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
-import { DailyFeedbackPayload } from "@/types/Entry";
+import { useDailyFeedback } from "@/hooks/useDailyFeedback";
 
 export default function FeedbackPage() {
-  const { fetchFeedback } = useJournal();
   const router = useRouter();
-  const [feedback, setFeedback] = useState<DailyFeedbackPayload | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const loadFeedback = async () => {
-      setLoading(true);
-      setError(null);
+  const today = new Date().toISOString().split("T")[0];
+  const {
+    data: feedback,
+    isLoading: loading,
+    error: queryError,
+  } = useDailyFeedback(today);
 
-      const today = new Date().toISOString().split("T")[0];
-
-      try {
-        const data = await fetchFeedback(today);
-        setFeedback(data);
-      } catch (err) {
-        setError(
-          "피드백 데이터를 불러오지 못했어요. 잠시 후 다시 시도해주세요."
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadFeedback();
-  }, [fetchFeedback]);
+  const error = queryError
+    ? "피드백 데이터를 불러오지 못했어요. 잠시 후 다시 시도해주세요."
+    : null;
 
   const handleBack = () => {
     router.push("/");
@@ -41,7 +24,7 @@ export default function FeedbackPage() {
 
   return (
     <DailyFeedbackView
-      feedback={feedback}
+      feedback={feedback ?? null}
       loading={loading}
       error={error}
       onBack={handleBack}

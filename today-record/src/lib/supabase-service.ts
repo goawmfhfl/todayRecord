@@ -1,12 +1,22 @@
-import { createClient } from "@supabase/supabase-js";
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
-// 서비스 키를 사용한 Supabase 클라이언트 (RLS 우회)
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+// 서비스 키 Supabase 클라이언트 지연 생성 (환경변수 미주입 시 초기화 오류 방지)
+let cachedServiceClient: SupabaseClient | null = null;
 
-const supabaseServiceKeyClient = createClient(
-  supabaseUrl!,
-  supabaseServiceKey!
-);
+export function getServiceSupabase(): SupabaseClient {
+  if (cachedServiceClient) return cachedServiceClient;
 
-export { supabaseServiceKeyClient as supabaseServiceKey };
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceRoleKey = process.env.SERVICE_ROLE_KEY;
+
+  if (!supabaseUrl) {
+    throw new Error("supabaseUrl is required (NEXT_PUBLIC_SUPABASE_URL)");
+  }
+
+  if (!serviceRoleKey) {
+    throw new Error("supabaseKey is required (SERVICE_ROLE_KEY)");
+  }
+
+  cachedServiceClient = createClient(supabaseUrl, serviceRoleKey);
+  return cachedServiceClient;
+}

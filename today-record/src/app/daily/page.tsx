@@ -1,43 +1,28 @@
 "use client";
 
 import { DailyFeedbackView } from "@/components/DailyFeedbackView";
-import { useJournal } from "@/app/providers";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState, useEffect } from "react";
-import { DailyFeedbackPayload } from "@/types/Entry";
+import { useDailyFeedback } from "@/hooks/useDailyFeedback";
 
 export default function DailyFeedbackPage() {
-  const { fetchFeedback } = useJournal();
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [feedback, setFeedback] = useState<DailyFeedbackPayload | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  // URL에서 date 파라미터 가져오기, 없으면 오늘 날짜 사용
+  const dateParam = searchParams.get("date");
+  const date = dateParam || new Date().toISOString().split("T")[0];
 
-  useEffect(() => {
-    const loadFeedback = async () => {
-      setLoading(true);
-      setError(null);
+  // useDailyFeedback 훅으로 데이터 조회
+  const {
+    data: feedback,
+    isLoading: loading,
+    error: queryError,
+  } = useDailyFeedback(date);
 
-      try {
-        // URL에서 date 파라미터 가져오기, 없으면 오늘 날짜 사용
-        const dateParam = searchParams.get("date");
-        const date = dateParam || new Date().toISOString().split("T")[0];
-
-        const data = await fetchFeedback(date);
-        setFeedback(data);
-      } catch (err) {
-        setError(
-          "피드백 데이터를 불러오지 못했어요. 잠시 후 다시 시도해주세요."
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadFeedback();
-  }, [fetchFeedback, searchParams]);
+  // 에러 메시지 변환
+  const error = queryError
+    ? "피드백 데이터를 불러오지 못했어요. 잠시 후 다시 시도해주세요."
+    : null;
 
   const handleBack = () => {
     router.push("/");
@@ -45,7 +30,7 @@ export default function DailyFeedbackPage() {
 
   return (
     <DailyFeedbackView
-      feedback={feedback}
+      feedback={feedback ?? null}
       loading={loading}
       error={error}
       onBack={handleBack}

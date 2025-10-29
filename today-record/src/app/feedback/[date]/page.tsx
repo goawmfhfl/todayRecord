@@ -3,8 +3,6 @@
 import { useParams, useRouter } from "next/navigation";
 import { useJournal } from "../../providers";
 import { DailyFeedbackView } from "@/components/DailyFeedbackView";
-import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
 import { DailyFeedbackPayload } from "@/types/Entry";
 
 export default function DateFeedbackPage() {

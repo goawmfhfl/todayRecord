@@ -3,7 +3,7 @@ export const QUERY_KEYS = {
   RECORDS: "records",
   CURRENT_USER: "currentUser",
   PROFILES: "profiles",
-  DAILY_FEEDBACKS: "dailyFeedbacks",
+  DAILY_FEEDBACK: "dailyFeedback",
   WEEKLY_SUMMARIES: "weeklySummaries",
   MONTHLY_SUMMARIES: "monthlySummaries",
   USER_CONSENTS: "userConsents",
@@ -13,7 +13,7 @@ export const QUERY_KEYS = {
 export const API_ENDPOINTS = {
   RECORDS: "records",
   PROFILES: "profiles",
-  DAILY_FEEDBACKS: "daily_feedbacks",
+  DAILY_FEEDBACK: "daily_feedback",
   WEEKLY_SUMMARIES: "weekly_summaries",
   MONTHLY_SUMMARIES: "monthly_summaries",
   USER_CONSENTS: "user_consents",

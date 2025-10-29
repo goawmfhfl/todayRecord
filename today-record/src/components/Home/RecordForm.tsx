@@ -42,6 +42,13 @@ export function RecordForm({ onSuccess }: RecordFormProps) {
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+      e.preventDefault();
+      handleSubmit();
+    }
+  };
+
   return (
     <div
       className="mb-6 p-5 rounded-2xl"
@@ -74,6 +81,7 @@ export function RecordForm({ onSuccess }: RecordFormProps) {
       <Textarea
         value={content}
         onChange={(e) => setContent(e.target.value)}
+        onKeyDown={handleKeyDown}
         placeholder="오늘의 인사이트를 기록하세요..."
         className="min-h-[100px] mb-3 resize-none text-sm focus:outline-none focus:ring-0"
         style={{

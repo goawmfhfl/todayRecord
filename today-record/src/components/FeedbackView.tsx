@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import {
   ArrowLeft,
   Lightbulb,
@@ -14,46 +13,29 @@ import { Badge } from "./ui/badge";
 import { Progress } from "./ui/progress";
 import { Card } from "./ui/card";
 import { Alert, AlertDescription } from "./ui/alert";
-import { useJournal } from "../app/providers";
 import type { DailyFeedbackPayload } from "../types/Entry";
 
 type LoadingState = "loading" | "success" | "error" | "empty";
 
-export function DailyFeedbackView() {
-  const { fetchFeedback } = useJournal();
-  const [loadingState, setLoadingState] = useState<LoadingState>("loading");
-  const [feedback, setFeedback] = useState<DailyFeedbackPayload | null>(null);
-  const [errorMessage, setErrorMessage] = useState<string>("");
+interface DailyFeedbackViewProps {
+  feedback?: DailyFeedbackPayload | null;
+  loading?: boolean;
+  error?: string | null;
+  onBack?: () => void;
+  showBackButton?: boolean;
+  title?: string;
+  subtitle?: string;
+}
 
-  useEffect(() => {
-    const loadFeedback = async () => {
-      setLoadingState("loading");
-      setErrorMessage("");
-
-      const today = new Date().toISOString().split("T")[0];
-
-      try {
-        const data = await fetchFeedback(today);
-
-        if (!data || Object.keys(data).length === 0) {
-          setLoadingState("empty");
-          setFeedback(null);
-        } else {
-          setFeedback(data);
-          setLoadingState("success");
-        }
-      } catch (error) {
-        setLoadingState("error");
-        setErrorMessage(
-          "피드백 데이터를 불러오지 못했어요. 잠시 후 다시 시도해주세요."
-        );
-        setFeedback(null);
-      }
-    };
-
-    loadFeedback();
-  }, [fetchFeedback]);
-
+export function DailyFeedbackView({
+  feedback = null,
+  loading = false,
+  error = null,
+  onBack,
+  showBackButton = true,
+  title = "오늘의 피드백",
+  subtitle = "AI가 분석한 일일 인사이트를 확인하세요",
+}: DailyFeedbackViewProps) {
   const formatDate = (dateStr: string) => {
     try {
       const date = new Date(dateStr);
@@ -72,28 +54,39 @@ export function DailyFeedbackView() {
     return Math.max(0, Math.min(10, score));
   };
 
-  const handleBack = () => {
-    window.history.back();
-  };
+  const handleBack = onBack || (() => window.history.back());
+
+  // loading state 결정
+  const loadingState: LoadingState = loading
+    ? "loading"
+    : error
+    ? "error"
+    : !feedback
+    ? "empty"
+    : "success";
+
+  const errorMessage = error || "";
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-6 pb-20">
       {/* Header */}
       <header className="mb-6">
-        <Button
-          variant="ghost"
-          onClick={handleBack}
-          className="mb-3 -ml-2"
-          style={{ color: "#3B82F6" }}
-        >
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          돌아가기
-        </Button>
+        {showBackButton && (
+          <Button
+            variant="ghost"
+            onClick={handleBack}
+            className="mb-3 -ml-2"
+            style={{ color: "#3B82F6" }}
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            돌아가기
+          </Button>
+        )}
         <h1 className="mb-1" style={{ color: "#333333", fontSize: "1.5rem" }}>
-          오늘의 피드백
+          {title}
         </h1>
         <p style={{ color: "#4E4B46", opacity: 0.7, fontSize: "0.9rem" }}>
-          AI가 분석한 일일 인사이트를 확인하세요
+          {subtitle}
         </p>
       </header>
 
