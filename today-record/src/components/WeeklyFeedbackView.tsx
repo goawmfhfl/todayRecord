@@ -119,7 +119,7 @@ export function WeeklyFeedbackView({
                 paddingTop: "0.5rem",
               }}
             >
-              "{summary.representative_sentence}"
+              &quot;{summary.representative_sentence}&quot;
             </p>
           </div>
         )}
@@ -571,7 +571,7 @@ export function WeeklyFeedbackView({
                   fontSize: "0.95rem",
                 }}
               >
-                "{summary.representative_sentence}"
+                &quot;{summary.representative_sentence}&quot;
               </p>
             </div>
           </div>

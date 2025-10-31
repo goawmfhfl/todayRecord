@@ -5,7 +5,7 @@ import { type Record } from "../../hooks/useRecords";
 interface RecordListProps {
   records: Record[];
   isLoading: boolean;
-  error: any;
+  error?: unknown;
   onEdit: (record: Record) => void;
   onDelete: (id: number) => void;
 }

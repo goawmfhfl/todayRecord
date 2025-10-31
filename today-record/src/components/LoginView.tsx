@@ -62,9 +62,11 @@ export function LoginView() {
           console.log("use Mutation 로그인 성공:", data);
           router.push("/");
         },
-        onError: (error: any) => {
-          console.error("use Mutation 로그인 실패:", error.message);
-          setErrors({ general: error.message });
+        onError: (error: unknown) => {
+          const message =
+            error instanceof Error ? error.message : String(error);
+          console.error("use Mutation 로그인 실패:", message);
+          setErrors({ general: message });
         },
       }
     );

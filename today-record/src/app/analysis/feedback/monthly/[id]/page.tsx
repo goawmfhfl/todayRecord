@@ -4,6 +4,7 @@ import {
   MonthlyFeedbackView,
   MonthlySummaryCore,
 } from "@/components/MonthlyFeedbackView";
+import type { PeriodSummary } from "@/types/Entry";
 import { useJournalStore } from "@/app/store/useJournalStore";
 import { useRouter } from "next/navigation";
 import { useState, useEffect, use } from "react";
@@ -144,7 +145,7 @@ export default function MonthlyViewPage({
 }
 
 // PeriodSummary를 MonthlySummaryCore로 변환하는 함수
-function convertToMonthlySummary(periodSummary: any): MonthlySummaryCore {
+function convertToMonthlySummary(periodSummary: PeriodSummary): MonthlySummaryCore {
   const currentDate = new Date();
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth() + 1;

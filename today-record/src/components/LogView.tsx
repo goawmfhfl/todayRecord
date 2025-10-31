@@ -255,6 +255,10 @@ export function LogView({ entries, onSelectDate }: LogViewProps) {
     const date = new Date(isoDate);
     setSelectedDate(date);
     // 페이지 이동 없이 상태만 업데이트
+    if (onSelectDate) {
+      // 부모가 콜백을 준 경우에도 알림
+      onSelectDate(date);
+    }
   };
 
   const handlePrevMonth = () => {

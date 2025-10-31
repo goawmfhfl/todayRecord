@@ -19,10 +19,10 @@ type SummariesViewProps = {
 };
 
 export function SummariesView({
-  entries,
+  entries: _entries,
   summaries,
   onGenerateSummary,
-  onSelectSummary,
+  onSelectSummary: _onSelectSummary,
 }: SummariesViewProps) {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<"weekly" | "monthly">("weekly");

@@ -3,7 +3,7 @@
 import { useParams, useRouter } from "next/navigation";
 import { useJournal } from "../../providers";
 import { DailyFeedbackView } from "@/components/DailyFeedbackView";
-import { DailyFeedbackPayload } from "@/types/Entry";
+import { DailyFeedbackPayload, type Entry } from "@/types/Entry";
 
 export default function DateFeedbackPage() {
   const params = useParams();
@@ -25,7 +25,7 @@ export default function DateFeedbackPage() {
   // 해당 날짜의 피드백 데이터 생성
   const generateFeedbackForDate = (
     date: string,
-    entries: any[]
+    entries: Entry[]
   ): DailyFeedbackPayload => {
     return {
       date: date,
