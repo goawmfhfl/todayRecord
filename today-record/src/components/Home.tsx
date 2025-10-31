@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Sparkles, LogOut, User } from "lucide-react";
 import { Button } from "./ui/button";
@@ -15,13 +15,15 @@ export function Home() {
 
   const [editingRecord, setEditingRecord] = useState<Record | null>(null);
   const [deletingRecordId, setDeletingRecordId] = useState<number | null>(null);
-  const today = new Date().toISOString().split("T")[0];
+  const todayIso = new Date().toISOString().split("T")[0];
 
-  const todayRecords = records.filter((record) => {
-    const today = new Date();
-    const recordDate = new Date(record.kst_date);
-    return today.toDateString() === recordDate.toDateString();
-  });
+  const hasTodayRecords = useMemo(() => {
+    const todayKey = new Date().toDateString();
+    return records.some((record) => {
+      const recordDate = new Date(record.kst_date).toDateString();
+      return recordDate === todayKey;
+    });
+  }, [records]);
 
   const handleEdit = (record: Record) => {
     setEditingRecord(record);
@@ -32,12 +34,11 @@ export function Home() {
   };
 
   const handleOpenDailyFeedback = async () => {
-    router.push(`/daily?date=${today}`);
+    router.push(`/daily?date=${todayIso}`);
   };
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-6 pb-24">
-      {/* Header */}
       <header className="mb-6">
         <div className="flex items-start justify-between mb-2">
           <div>
@@ -106,7 +107,7 @@ export function Home() {
         onDelete={handleDelete}
       />
 
-      {todayRecords.length > 0 && (
+      {hasTodayRecords && (
         <div className="fixed bottom-20 left-0 right-0 flex justify-center px-4">
           <Button
             onClick={handleOpenDailyFeedback}

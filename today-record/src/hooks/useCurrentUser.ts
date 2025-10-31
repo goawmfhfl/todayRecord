@@ -6,7 +6,7 @@ import { QUERY_KEYS, ERROR_MESSAGES } from "@/constants";
 export interface CurrentUser {
   id: string;
   email?: string;
-  user_metadata?: any;
+  user_metadata?: Record<string, unknown>;
 }
 
 // 커스텀 에러 클래스

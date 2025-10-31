@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import type { User, Session } from "@supabase/supabase-js";
 
 // 회원가입 데이터 타입 정의
 export interface SignUpData {
@@ -12,8 +13,8 @@ export interface SignUpData {
 
 // 회원가입 응답 타입 정의
 export interface SignUpResponse {
-  user: any;
-  session: any;
+  user: User | null;
+  session: Session | null;
 }
 
 // 커스텀 에러 클래스

@@ -7,14 +7,14 @@ export function getServiceSupabase(): SupabaseClient {
   if (cachedServiceClient) return cachedServiceClient;
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const serviceRoleKey = process.env.SERVICE_ROLE_KEY;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!supabaseUrl) {
     throw new Error("supabaseUrl is required (NEXT_PUBLIC_SUPABASE_URL)");
   }
 
   if (!serviceRoleKey) {
-    throw new Error("supabaseKey is required (SERVICE_ROLE_KEY)");
+    throw new Error("supabaseKey is required (SUPABASE_SERVICE_ROLE_KEY)");
   }
 
   cachedServiceClient = createClient(supabaseUrl, serviceRoleKey);

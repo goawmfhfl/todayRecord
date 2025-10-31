@@ -1,4 +1,4 @@
-import { Loader2, AlertCircle, Eye, Sparkles } from "lucide-react";
+import { Eye, Sparkles } from "lucide-react";
 import { Button } from "./button";
 import { Alert, AlertDescription } from "./alert";
 

@@ -74,6 +74,7 @@ export type PeriodSummary = {
 };
 
 // Generate dummy summaries
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const generateDummySummaries = (): PeriodSummary[] => {
   const summaries: PeriodSummary[] = [];
   const now = new Date();

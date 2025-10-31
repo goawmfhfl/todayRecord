@@ -148,10 +148,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // insertedData가 없어도 insert가 성공했을 수 있으므로 확인
     if (!insertedData || insertedData.length === 0) {
-      console.warn(
-        "Insert succeeded but no data returned. Checking if data exists..."
+      return NextResponse.json(
+        { error: "Failed to save feedback to database" },
+        { status: 500 }
       );
     }
 
