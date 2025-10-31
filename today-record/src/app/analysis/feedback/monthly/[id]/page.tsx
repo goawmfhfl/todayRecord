@@ -145,7 +145,9 @@ export default function MonthlyViewPage({
 }
 
 // PeriodSummary를 MonthlySummaryCore로 변환하는 함수
-function convertToMonthlySummary(periodSummary: PeriodSummary): MonthlySummaryCore {
+function convertToMonthlySummary(
+  periodSummary: PeriodSummary
+): MonthlySummaryCore {
   const currentDate = new Date();
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth() + 1;

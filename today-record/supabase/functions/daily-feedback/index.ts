@@ -1,4 +1,3 @@
-/// <reference types="jsr:@supabase/functions-js@2" />
 // @ts-ignore - Deno URL import; types resolved by Deno at runtime
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
@@ -28,10 +27,10 @@ Deno.serve(async (req) => {
         serviceRoleKey
       );
       const nowIso = new Date().toISOString();
-      let payload: any = {};
+      let payload: Record<string, unknown> = {};
       try {
         if (req.headers.get("content-type")?.includes("application/json")) {
-          payload = await req.json();
+          payload = (await req.json()) as Record<string, unknown>;
         }
       } catch (_) {
         payload = {};

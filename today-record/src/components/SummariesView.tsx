@@ -19,10 +19,10 @@ type SummariesViewProps = {
 };
 
 export function SummariesView({
-  entries: _entries,
+  entries: _entries, // eslint-disable-line @typescript-eslint/no-unused-vars
   summaries,
   onGenerateSummary,
-  onSelectSummary: _onSelectSummary,
+  onSelectSummary: _onSelectSummary, // eslint-disable-line @typescript-eslint/no-unused-vars
 }: SummariesViewProps) {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<"weekly" | "monthly">("weekly");

@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useState } from "react";
 import { useSignUp } from "@/hooks/useSignUp";
 import { AuthHeader } from "./forms/AuthHeader";
 import { EmailField } from "./forms/EmailField";
@@ -12,17 +11,12 @@ import { SubmitButton } from "./forms/SubmitButton";
 import { TermsModal } from "./modals/TermsModal";
 import { AIDataModal } from "./modals/AIDataModal";
 
-export function SignUpView() {
-  const searchParams = useSearchParams();
-  const [infoMessage, setInfoMessage] = useState<string | null>(null);
-
-  // URL 파라미터에서 메시지 확인
-  useEffect(() => {
-    const message = searchParams.get("message");
-    if (message) {
-      setInfoMessage(message);
-    }
-  }, [searchParams]);
+export function SignUpView({
+  initialMessage,
+}: {
+  initialMessage?: string | null;
+}) {
+  const [infoMessage] = useState<string | null>(initialMessage || null);
 
   // 폼 데이터 상태 통합
   const [formData, setFormData] = useState({
